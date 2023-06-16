@@ -13,6 +13,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 repositories {
@@ -47,4 +48,41 @@ application {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+checkstyle {
+    showViolations = true
+    ignoreFailures = false
+    maxWarnings = 0
+    maxErrors = 0
+}
+
+test {
+    finalizedBy jacocoTestReport
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    dependsOn test
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.8
+            }
+        }
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.8
+            }
+        }
+    }
 }
