@@ -1,10 +1,8 @@
 package pl.futurecollars.invoicing.model;
 
 import lombok.Data;
-import lombok.Generated;
 
 @Data
-@Generated
 public class Company {
 
   private String taxIdentificationNumber;

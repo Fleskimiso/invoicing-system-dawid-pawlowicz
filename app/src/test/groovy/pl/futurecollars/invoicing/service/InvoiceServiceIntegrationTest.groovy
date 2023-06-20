@@ -5,18 +5,18 @@ import pl.futurecollars.invoicing.db.memory.InMemoryDatabase
 import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Specification
 
-import static  pl.futurecollars.invoicing.TestHelpers.invoice
+import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 class InvoiceServiceIntegrationTest extends Specification {
 
     private InvoiceService service
-    private List<Invoice>  invoices
+    private List<Invoice> invoices
 
     def setup() {
         Database database = new InMemoryDatabase()
         service = new InvoiceService(database)
 
-        invoices = (1..10).collect{invoice(it)}
+        invoices = (1..10).collect { invoice(it) }
     }
 
     def "should save all the invoices to the database service correctly"() {

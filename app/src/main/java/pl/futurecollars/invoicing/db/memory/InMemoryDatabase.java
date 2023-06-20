@@ -16,8 +16,7 @@ public class InMemoryDatabase implements Database {
   public int save(Invoice invoice) {
     invoice.setId(currentId);
     records.put(currentId, invoice);
-    currentId += 1;
-    return currentId - 1;
+    return currentId++;
   }
 
   @Override
