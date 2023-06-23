@@ -1,32 +1,37 @@
-package pl.futurecollars.invoicing.db.memory
+package pl.futurecollars.invoicing.db
 
-import pl.futurecollars.invoicing.db.Database
+
 import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Specification
 
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
-class InMemoryDatabaseTest extends Specification {
-    private Database database
+abstract class AbstractDatabaseTest extends Specification {
 
-    private List<Invoice> invoices
+    private Database database = getDatabase()
+    private List<Invoice> invoices = (1..10).collect { invoice(it) }
 
-    def setup() {
-        database = new InMemoryDatabase()
-        invoices = (1..10).collect { invoice(it) }
-    }
+    abstract Database getDatabase()
 
     def "should save all the invoices to the database correctly"() {
-        when:
-        def invoicesId = invoices.collect { database.save(it) }
+        given:
+        def invoicesId = []
 
+        when:
+        for (i in 0..<invoices.size()) {
+            invoicesId.add(database.save(invoices.get(i)))
+        }
         then:
-        invoicesId.forEach { invoiceId -> assert database.getById(invoiceId as int).isPresent() }
+        for (i in 0..<invoicesId.size()) {
+            assert database.getById(invoicesId.get(i) as int).isPresent()
+        }
     }
 
     def "should be able to retrieve all records from database"() {
         when:
-        invoices.forEach { database.save(it) }
+        for (i in 0..<invoices.size()) {
+            database.save(invoices.get(i))
+        }
 
         then:
         invoices == database.getAll()
