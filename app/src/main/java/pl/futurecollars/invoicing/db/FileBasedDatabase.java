@@ -52,7 +52,7 @@ public class FileBasedDatabase implements Database {
   }
 
   @Override
-  public void update(int id, Invoice updatedInvoice) {
+  public Optional<Invoice> update(int id, Invoice updatedInvoice) {
     try {
       List<String> allInvoices = FileService.readLinesFromFile(databasePath);
       List<String> filteredInvoices = allInvoices
@@ -68,6 +68,8 @@ public class FileBasedDatabase implements Database {
       filteredInvoices.add(jsonService.toJson(updatedInvoice));
 
       FileService.writeLinesToFile(databasePath, filteredInvoices);
+
+      return Optional.of(updatedInvoice);
     } catch (IOException exception) {
       throw new RuntimeException("Failed to update invoice with id: " + id, exception);
     }
