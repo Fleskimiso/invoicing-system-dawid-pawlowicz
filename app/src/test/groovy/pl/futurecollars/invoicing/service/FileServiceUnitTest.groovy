@@ -7,13 +7,14 @@ import java.nio.file.Files
 class FileServiceUnitTest extends Specification {
 
     def tempPath = File.createTempFile("temp", ".txt").toPath()
+    def fileService = new FileService()
 
     def "should write line correctly to file"() {
         given:
         def testLine = "this is testline"
 
         when:
-        FileService.writeToFile(tempPath, testLine)
+        fileService.writeToFile(tempPath, testLine)
 
         then:
         testLine == Files.readAllLines(tempPath)[0]
@@ -24,10 +25,10 @@ class FileServiceUnitTest extends Specification {
         def testLine = "this is testline"
 
         when:
-        FileService.writeToFile(tempPath, testLine)
+        fileService.writeToFile(tempPath, testLine)
 
         then:
-        testLine == FileService.readLinesFromFile(tempPath)[0]
+        testLine == fileService.readLinesFromFile(tempPath)[0]
 
     }
 
@@ -36,10 +37,10 @@ class FileServiceUnitTest extends Specification {
         def testList = ["a", "b", "c"]
 
         when:
-        FileService.writeLinesToFile(tempPath, testList)
+        fileService.writeLinesToFile(tempPath, testList)
 
         then:
-        testList == FileService.readLinesFromFile(tempPath)
+        testList == fileService.readLinesFromFile(tempPath)
     }
 
     def "should append to a file correctly"() {
@@ -47,11 +48,11 @@ class FileServiceUnitTest extends Specification {
         def testLine = "this is a test line"
 
         when:
-        FileService.writeToFile(tempPath, testLine + "\n")
-        FileService.appendToFile(tempPath, testLine)
+        fileService.writeToFile(tempPath, testLine + "\n")
+        fileService.appendToFile(tempPath, testLine)
 
         then:
-        [testLine, testLine] == FileService.readLinesFromFile(tempPath)
+        [testLine, testLine] == fileService.readLinesFromFile(tempPath)
     }
 
 }

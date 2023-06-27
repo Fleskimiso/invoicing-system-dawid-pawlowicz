@@ -28,7 +28,7 @@ public class InvoiceController {
   }
 
   @PostMapping()
-  public ResponseEntity<Integer> postInvoice(@RequestBody Invoice invoice) {
+  public ResponseEntity<Integer> saveInvoice(@RequestBody Invoice invoice) {
     return ResponseEntity.status(HttpStatus.CREATED).body(invoiceService.save(invoice));
   }
 
