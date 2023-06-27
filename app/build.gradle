@@ -6,6 +6,12 @@
  * User Manual available at https://docs.gradle.org/8.1.1/userguide/building_java_projects.html
  */
 
+buildscript {
+    ext {
+        lombokVersion = '1.18.20'
+    }
+}
+
 plugins {
     // Apply the groovy plugin to also add support for Groovy (needed for Spock)
     id 'groovy'
@@ -13,6 +19,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 repositories {
@@ -30,6 +37,12 @@ dependencies {
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
+
+    //Lombok
+    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -47,4 +60,41 @@ application {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+checkstyle {
+    showViolations = true
+    ignoreFailures = false
+    maxWarnings = 0
+    maxErrors = 0
+}
+
+test {
+    finalizedBy jacocoTestReport
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    dependsOn test
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.8
+            }
+        }
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.8
+            }
+        }
+    }
 }
