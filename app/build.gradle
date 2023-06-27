@@ -40,6 +40,7 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
 
+
     //jackson
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.1'
@@ -49,6 +50,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+
 
     //Spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -108,10 +110,10 @@ jacocoTestCoverageVerification {
         }
     }
 
+
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: 'pl/futurecollars/invoicing/controller/**')
         }))
     }
-
 }
