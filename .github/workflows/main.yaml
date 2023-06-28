@@ -5,12 +5,6 @@ on:
     branches: [ 'task_[0-9]+\/.*' ]
   pull_request:
     branches: [ 'task_[0-9]+\/.*' ]
-  pull_request_target:
-    branches:
-      - 'task_[0-9]+\/.*'
-  
-
-  workflow_dispatch:
 
 jobs:
   build:
