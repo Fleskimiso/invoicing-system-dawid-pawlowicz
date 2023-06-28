@@ -5,7 +5,7 @@ on:
     branches: [ 'task_[0-9]+\/.*', 'master' ]
   pull_request:
     branches: [ 'task_[0-9]+\/.*', 'master' ]
-  
+
 
 jobs:
   build:

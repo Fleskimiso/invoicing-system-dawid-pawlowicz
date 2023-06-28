@@ -21,8 +21,8 @@ public class InvoiceService {
     return database.getById(id);
   }
 
-  public void update(int id, Invoice updatedInvoice) {
-    database.update(id, updatedInvoice);
+  public Optional<Invoice> update(int id, Invoice updatedInvoice) {
+    return database.update(id, updatedInvoice);
   }
 
   public List<Invoice> getAll() {
