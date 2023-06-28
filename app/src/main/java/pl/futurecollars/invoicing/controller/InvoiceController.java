@@ -39,7 +39,9 @@ public class InvoiceController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Invoice> getInvoice(@PathVariable int id) {
-    return invoiceService.getById(id).map(invoice -> ResponseEntity.ok().body(invoice)).orElse(ResponseEntity.notFound().build());
+    return invoiceService.getById(id)
+        .map(invoice -> ResponseEntity.ok().body(invoice))
+        .orElse(ResponseEntity.notFound().build());
   }
 
   @DeleteMapping("/{id}")
@@ -51,7 +53,10 @@ public class InvoiceController {
   @PutMapping("/{id}")
   public ResponseEntity<Invoice> updateInvoice(@PathVariable int id, @RequestBody Invoice invoice) {
     Optional<Invoice> updatedInvoice = invoiceService.update(id, invoice);
-    return updatedInvoice.map(optionalInvoice -> ResponseEntity.ok(invoice)).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    return updatedInvoice
+        .map(optionalInvoice -> ResponseEntity.ok(invoice))
+        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .build());
   }
 
 }
