@@ -2,6 +2,7 @@ package pl.futurecollars.invoicing.controller;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.futurecollars.invoicing.db.memory.InMemoryDatabase;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.service.InvoiceService;
 
@@ -20,7 +20,12 @@ import pl.futurecollars.invoicing.service.InvoiceService;
 @RequestMapping("/invoices")
 public class InvoiceController {
 
-  private final InvoiceService invoiceService = new InvoiceService(new InMemoryDatabase());
+  private final InvoiceService invoiceService;
+
+  @Autowired
+  public InvoiceController(InvoiceService invoiceService) {
+    this.invoiceService = invoiceService;
+  }
 
   @GetMapping()
   public ResponseEntity<List<Invoice>> getAllInvoices() {
@@ -34,9 +39,7 @@ public class InvoiceController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Invoice> getInvoice(@PathVariable int id) {
-    return invoiceService.getById(id)
-        .map(invoice -> ResponseEntity.ok().body(invoice))
-        .orElse(ResponseEntity.notFound().build());
+    return invoiceService.getById(id).map(invoice -> ResponseEntity.ok().body(invoice)).orElse(ResponseEntity.notFound().build());
   }
 
   @DeleteMapping("/{id}")
@@ -48,8 +51,7 @@ public class InvoiceController {
   @PutMapping("/{id}")
   public ResponseEntity<Invoice> updateInvoice(@PathVariable int id, @RequestBody Invoice invoice) {
     Optional<Invoice> updatedInvoice = invoiceService.update(id, invoice);
-    return updatedInvoice.map(optionalInvoice -> ResponseEntity.ok(invoice))
-        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    return updatedInvoice.map(optionalInvoice -> ResponseEntity.ok(invoice)).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }
 
 }
