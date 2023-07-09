@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.service;
+package pl.futurecollars.invoicing.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -6,9 +6,9 @@ import java.nio.file.Path;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.futurecollars.invoicing.db.file.FileBasedDatabase;
-import pl.futurecollars.invoicing.service.FileService;
 import pl.futurecollars.invoicing.service.IdService;
-import pl.futurecollars.invoicing.service.JsonService;
+import pl.futurecollars.invoicing.utils.FileService;
+import pl.futurecollars.invoicing.utils.JsonService;
 
 @Configuration
 public class DatabaseConfiguration {
