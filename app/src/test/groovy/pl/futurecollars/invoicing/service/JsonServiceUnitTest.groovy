@@ -1,6 +1,7 @@
 package pl.futurecollars.invoicing.service
 
 import pl.futurecollars.invoicing.model.Invoice
+import pl.futurecollars.invoicing.utils.JsonService
 import spock.lang.Specification
 
 import static pl.futurecollars.invoicing.TestHelpers.invoice

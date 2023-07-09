@@ -1,10 +1,12 @@
-package pl.futurecollars.invoicing.service;
+package pl.futurecollars.invoicing.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.stereotype.Service;
 
+@Service
 public class JsonService {
 
   private final ObjectMapper objectMapper = new ObjectMapper();

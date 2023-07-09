@@ -1,11 +1,13 @@
-package pl.futurecollars.invoicing.service;
+package pl.futurecollars.invoicing.utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class FileService {
 
   public void appendToFile(Path path, String line) throws IOException {

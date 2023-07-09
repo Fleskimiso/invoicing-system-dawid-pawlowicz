@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.model.Invoice;
-import pl.futurecollars.invoicing.service.FileService;
 import pl.futurecollars.invoicing.service.IdService;
-import pl.futurecollars.invoicing.service.JsonService;
+import pl.futurecollars.invoicing.utils.FileService;
+import pl.futurecollars.invoicing.utils.JsonService;
 
 @AllArgsConstructor
 public class FileBasedDatabase implements Database {

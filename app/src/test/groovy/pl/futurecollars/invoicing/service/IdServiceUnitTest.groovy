@@ -1,5 +1,6 @@
 package pl.futurecollars.invoicing.service
 
+import pl.futurecollars.invoicing.utils.FileService
 import spock.lang.Specification
 
 class IdServiceUnitTest extends Specification {

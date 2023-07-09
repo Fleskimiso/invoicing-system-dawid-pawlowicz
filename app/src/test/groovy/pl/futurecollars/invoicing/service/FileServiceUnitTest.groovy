@@ -1,5 +1,6 @@
 package pl.futurecollars.invoicing.service
 
+import pl.futurecollars.invoicing.utils.FileService
 import spock.lang.Specification
 
 import java.nio.file.Files

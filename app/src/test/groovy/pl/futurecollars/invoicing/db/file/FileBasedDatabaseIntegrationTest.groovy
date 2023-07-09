@@ -2,9 +2,9 @@ package pl.futurecollars.invoicing.db.file
 
 import pl.futurecollars.invoicing.db.AbstractDatabaseTest
 import pl.futurecollars.invoicing.db.Database
-import pl.futurecollars.invoicing.service.FileService
+import pl.futurecollars.invoicing.utils.FileService
 import pl.futurecollars.invoicing.service.IdService
-import pl.futurecollars.invoicing.service.JsonService
+import pl.futurecollars.invoicing.utils.JsonService
 
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
