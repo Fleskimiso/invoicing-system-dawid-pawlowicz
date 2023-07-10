@@ -27,7 +27,7 @@ public class InvoiceController {
     this.invoiceService = invoiceService;
   }
 
-  @GetMapping()
+  @GetMapping(produces = {"application/json;charset=UTF-8"})
   public ResponseEntity<List<Invoice>> getAllInvoices() {
     return ResponseEntity.ok(invoiceService.getAll());
   }
@@ -37,7 +37,7 @@ public class InvoiceController {
     return ResponseEntity.status(HttpStatus.CREATED).body(invoiceService.save(invoice));
   }
 
-  @GetMapping("/{id}")
+  @GetMapping(value = "/{id}", produces = {"application/json;charset=UTF-8"})
   public ResponseEntity<Invoice> getInvoice(@PathVariable int id) {
     return invoiceService.getById(id)
         .map(invoice -> ResponseEntity.ok().body(invoice))
@@ -46,17 +46,25 @@ public class InvoiceController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteInvoice(@PathVariable int id) {
-    invoiceService.delete(id);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    try {
+      invoiceService.delete(id);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    } catch (RuntimeException runtimeException) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
   }
 
-  @PutMapping("/{id}")
+  @PutMapping(value = "/{id}", produces = {"application/json;charset=UTF-8"})
   public ResponseEntity<Invoice> updateInvoice(@PathVariable int id, @RequestBody Invoice invoice) {
-    Optional<Invoice> updatedInvoice = invoiceService.update(id, invoice);
-    return updatedInvoice
-        .map(optionalInvoice -> ResponseEntity.ok(invoice))
-        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .build());
+    try {
+      Optional<Invoice> updatedInvoice = invoiceService.update(id, invoice);
+      return updatedInvoice
+          .map(optionalInvoice -> ResponseEntity.ok(invoice))
+          .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+              .build());
+    } catch (RuntimeException exception) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
   }
 
 }
