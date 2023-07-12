@@ -1,0 +1,6 @@
+server:
+  port: 5454
+
+invoicing-system:
+  database:
+    type: memory

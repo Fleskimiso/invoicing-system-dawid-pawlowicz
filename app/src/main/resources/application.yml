@@ -1,0 +1,18 @@
+server:
+  port: 7777
+
+invoicing-system:
+  database:
+    type: file
+    location: db
+    invoices.filename: records.txt
+    id.filename: id.txt
+logging:
+  level:
+    pl:
+      futurecollars:
+        invoicing:
+          configuration: DEBUG
+          db: DEBUG
+    root: INFO
+
