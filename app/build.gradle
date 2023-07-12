@@ -9,14 +9,16 @@
 buildscript {
     ext {
         lombokVersion = '1.18.20'
+        spockVersion = '2.4-M1-groovy-3.0'
+        springBootVersion = '3.1.1'
+        springDependencyManagementVersion = '1.1.0'
+        groovyVersion = '3.0.13'
     }
 }
 
 plugins {
     // Apply the groovy plugin to also add support for Groovy (needed for Spock)
     id 'groovy'
-
-    // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'checkstyle'
     id 'jacoco'
@@ -30,23 +32,10 @@ repositories {
 }
 
 dependencies {
-    // Use the latest Groovy version for Spock testing
-    testImplementation 'org.codehaus.groovy:groovy:3.0.13'
-
-    // Use the awesome Spock testing and specification framework even with Java
-    testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-3.0'
-    testImplementation 'org.spockframework:spock-spring:2.4-M1-groovy-3.0'
-
-    testImplementation 'junit:junit:4.13.2'
-
-    // This dependency is used by the application.
-    implementation 'com.google.guava:guava:31.1-jre'
-
-
-    //jackson
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.1'
-
+    //spock and groovy
+    implementation("org.codehaus.groovy:groovy:${groovyVersion}")
+    implementation("org.spockframework:spock-core:${spockVersion}")
+    implementation("org.spockframework:spock-spring:${spockVersion}")
     //Lombok
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
@@ -63,6 +52,7 @@ dependencies {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.ORACLE
     }
 }
 
