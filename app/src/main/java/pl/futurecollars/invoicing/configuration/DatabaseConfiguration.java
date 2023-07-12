@@ -39,6 +39,7 @@ public class DatabaseConfiguration {
     Path databasePath = Files.createTempFile(databaseLocation, databaseFilename);
     return new FileBasedDatabase(databasePath, idService, jsonService, fileService);
   }
+
   @ConditionalOnProperty(name = "invoicing-system.database.type", havingValue = "memory")
   @Bean
   public InMemoryDatabase inMemoryDatabase() {
