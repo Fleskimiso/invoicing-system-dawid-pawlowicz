@@ -7,8 +7,6 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -24,7 +22,6 @@ public class SpringFoxConfiguration {
         .apis(RequestHandlerSelectors.basePackage("pl.futurecollars"))
         .paths(PathSelectors.any())
         .build()
-        .tags(new Tag("invoice-controller", "Controller used to manage invoices"))
         .apiInfo(apiInfo());
   }
 
@@ -33,9 +30,6 @@ public class SpringFoxConfiguration {
         .description("An application to manage invoices")
         .license("MIT license")
         .title("Invoice Manager")
-        .contact(
-            new Contact("Dawid i Kamil", "https://github.com/Fleskimiso/invoicing-system-dawid-pawlowicz", "")
-        )
         .version("1.0.1")
         .build();
   }
