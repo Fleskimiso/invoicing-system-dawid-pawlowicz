@@ -10,9 +10,12 @@ buildscript {
     ext {
         lombokVersion = '1.18.20'
         spockVersion = '2.4-M1-groovy-3.0'
-        springBootVersion = '3.1.1'
+        springBootVersion = '2.7.12'
         springDependencyManagementVersion = '1.1.0'
         groovyVersion = '3.0.13'
+        springFoxStarterVersion = '3.0.0'
+        springFoxSwaggeruiVersion = '3.0.0'
+        springFoxSwagger2Version = '3.0.0'
     }
 }
 
@@ -22,7 +25,7 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'jacoco'
-    id 'org.springframework.boot' version '3.1.1'
+    id 'org.springframework.boot' version '2.7.12'
     id 'io.spring.dependency-management' version '1.1.0'
 }
 
@@ -42,23 +45,26 @@ dependencies {
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
 
-
     //Spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //SpringFox
+    implementation("io.springfox:springfox-boot-starter:${springFoxStarterVersion}")
+    implementation ("io.springfox:springfox-swagger-ui:${springFoxSwaggeruiVersion}")
+    implementation("io.springfox:springfox-swagger2:${springFoxSwagger2Version}")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
-        vendor = JvmVendorSpec.ORACLE
     }
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'pl.futurecollars.invoicing.App'
+    mainClass = 'pl.futurecollars.invoicing.InvoicingApplication'
 }
 
 tasks.named('test') {
