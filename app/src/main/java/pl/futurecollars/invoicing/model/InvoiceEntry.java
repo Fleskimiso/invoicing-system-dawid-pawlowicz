@@ -13,13 +13,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class InvoiceEntry {
 
-  @ApiModelProperty(value = "Invoice entry description", required = true)
+  @ApiModelProperty(value = "Invoice entry description", required = true, example = "Laptop acer aspire 5")
   private String description;
-  @ApiModelProperty(value = "Invoice entry price", required = true)
+  @ApiModelProperty(value = "Invoice entry price", required = true, example = "2999.99")
   private BigDecimal price;
-  @ApiModelProperty(value = "Invoice entry vat value", required = true)
+  @ApiModelProperty(value = "Invoice entry vat value", required = true, example = "600")
   private BigDecimal vatValue;
-  @ApiModelProperty(value = "Invoice entry vat rate", required = true)
+  @ApiModelProperty(value = "Invoice entry vat rate", required = true, example = "VAT_21")
   private Vat vatRate;
 
 }
