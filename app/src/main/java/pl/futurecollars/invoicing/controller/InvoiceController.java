@@ -2,7 +2,7 @@ package pl.futurecollars.invoicing.controller;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,14 +12,10 @@ import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.service.InvoiceService;
 
 @RestController
-public class InvoiceController implements InvoiceControllerInterface {
+@AllArgsConstructor
+public class InvoiceController implements InvoiceControllerApi {
 
   private final InvoiceService invoiceService;
-
-  @Autowired
-  public InvoiceController(InvoiceService invoiceService) {
-    this.invoiceService = invoiceService;
-  }
 
   @Override
   public ResponseEntity<List<Invoice>> getAllInvoices() {

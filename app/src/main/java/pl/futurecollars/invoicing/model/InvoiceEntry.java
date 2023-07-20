@@ -15,7 +15,7 @@ public class InvoiceEntry {
   private String description;
   @ApiModelProperty(value = "Invoice entry price", required = true, example = "2999.99")
   private BigDecimal price;
-  @ApiModelProperty(value = "Invoice entry vat value", required = true, example = "21")
+  @ApiModelProperty(value = "Invoice entry vat value", required = true, example = "600")
   private BigDecimal vatValue;
   @ApiModelProperty(value = "Invoice entry vat rate", required = true, example = "VAT_21")
   private Vat vatRate;
