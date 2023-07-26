@@ -63,6 +63,20 @@ class HelperController extends Specification{
         )
     }
 
+    protected int addInvoiceAndReturnIdInvoice(Invoice invoice) {
+        Integer.valueOf(
+                mockMvc.perform(
+                        post(ENDPOINT)
+                                .content(jsonService.toJson(invoice))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                        .andExpect(status().isCreated())
+                        .andReturn()
+                        .response
+                        .contentAsString
+        )
+    }
+
     protected List<Invoice> addMultipleInvoices(int count) {
         (1..count).collect { id ->
             def invoice = invoice(id)
