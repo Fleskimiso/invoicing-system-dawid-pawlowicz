@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.futurecollars.invoicing.model.TaxCalculatorResult;
+import pl.futurecollars.invoicing.controller.TaxCalculatorResult;
 
 @RequestMapping("/tax")
 @Api(tags = {"tax-controller"})
