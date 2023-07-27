@@ -6,7 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoicing.utils.JsonService
 import spock.lang.Unroll
+<<<<<<< HEAD
 import static pl.futurecollars.invoicing.TestHelpers.carInvoice
+=======
+>>>>>>> b3b89ca (refactored requested changes)
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -59,6 +62,7 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         taxCalculatorResponse.vatToReturn == 0
     }
 
+<<<<<<< HEAD
 
     def "Tax when we used car"() {
         given:
@@ -97,4 +101,6 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         taxCalculatorResponse.outgoingVat == 1370.64
         taxCalculatorResponse.vatToReturn == -26.64
     }
+=======
+>>>>>>> b3b89ca (refactored requested changes)
 }
