@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
+import pl.futurecollars.invoicing.model.Company
 import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.utils.JsonService
 import spock.lang.Specification
@@ -71,13 +72,17 @@ class ControllerTestHelper extends Specification {
         jsonService.toJson(invoice(id))
     }
 
-    protected TaxCalculatorResult getTaxCalculatorResult(String endpoint, String taxIdentificationNumber) {
-        print("$endpoint/$taxIdentificationNumber")
-        def taxAsString = mockMvc.perform(get("$endpoint/$taxIdentificationNumber"))
+    protected TaxCalculatorResult getTaxCalculatorResult(String endpoint, Company company) {
+        def taxAsString = mockMvc.perform(
+                post(endpoint)
+                        .content(jsonService.toJson(company))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
                 .contentAsString
+
         jsonService.toObject(taxAsString, TaxCalculatorResult)
     }
 

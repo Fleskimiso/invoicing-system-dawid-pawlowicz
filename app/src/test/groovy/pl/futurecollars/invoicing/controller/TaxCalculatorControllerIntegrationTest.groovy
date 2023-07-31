@@ -6,10 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoicing.utils.JsonService
 import spock.lang.Unroll
-<<<<<<< HEAD
 import static pl.futurecollars.invoicing.TestHelpers.carInvoice
-=======
->>>>>>> b3b89ca (refactored requested changes)
+import static pl.futurecollars.invoicing.TestHelpers.company
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,15 +29,15 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         addMultipleInvoices(INVOICE_ENDPOINT,10)
 
         when:
-        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, "997")
+        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, company(30))
 
         then:
         taxCalculatorResponse.income ==0
         taxCalculatorResponse.costs==0
         taxCalculatorResponse.earnings==0
         taxCalculatorResponse.incomeTax==0
-        taxCalculatorResponse.pensionInsurance==0
-        taxCalculatorResponse.healthInsurance==0
+        taxCalculatorResponse.pensionInsurance==30
+        taxCalculatorResponse.healthInsurance==1188
         taxCalculatorResponse.incomingVat==0
         taxCalculatorResponse.outgoingVat==0
         taxCalculatorResponse.vatToReturn ==0
@@ -49,11 +48,13 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         addMultipleInvoices(INVOICE_ENDPOINT,10)
 
         when:
-        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, "10101010101010101010")
+        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, company(10))
 
         then:
         taxCalculatorResponse.income == 8000
         taxCalculatorResponse.costs == 8000
+        taxCalculatorResponse.pensionInsurance == 10
+        taxCalculatorResponse.incomeTax == 0.0
         taxCalculatorResponse.earnings == 0
         taxCalculatorResponse.pensionInsurance == 10
         taxCalculatorResponse.incomeTax == 0.0
@@ -62,7 +63,6 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         taxCalculatorResponse.vatToReturn == 0
     }
 
-<<<<<<< HEAD
 
     def "Tax when we used car"() {
         given:
@@ -101,6 +101,4 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         taxCalculatorResponse.outgoingVat == 1370.64
         taxCalculatorResponse.vatToReturn == -26.64
     }
-=======
->>>>>>> b3b89ca (refactored requested changes)
 }

@@ -6,17 +6,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.futurecollars.invoicing.controller.TaxCalculatorResult;
-<<<<<<< HEAD
 import pl.futurecollars.invoicing.model.Company;
-=======
->>>>>>> b3b89ca (refactored requested changes)
 
 @RequestMapping(value = "/tax", produces = {"application/json;charset=UTF-8"})
 @Api(tags = {"tax-controller"})
 public interface TaxCalculator {
 
   @ApiOperation(value = "Get tax related information's (incomes, costs, vat and taxes)")
-  @PostMapping
+  @PostMapping(produces = {"application/json;charset=UTF-8"})
   TaxCalculatorResult calculateTaxes(@RequestBody Company company);
 
 }

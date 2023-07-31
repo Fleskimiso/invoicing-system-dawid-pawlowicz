@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoicing.controller.TaxCalculatorResult;
-<<<<<<< HEAD
 import pl.futurecollars.invoicing.model.Company;
-=======
->>>>>>> b3b89ca (refactored requested changes)
 import pl.futurecollars.invoicing.service.TaxCalculatorService;
 
 @RestController

@@ -57,6 +57,7 @@ class TestHelpers {
                 .seller(company(4))
                 .buyer(company(8))
                 .entries(List.of(invoiceEntry()))
+                .date(LocalDate.now())
                 .build()
 
     }
