@@ -4,16 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import pl.futurecollars.invoicing.model.Company
-import pl.futurecollars.invoicing.model.TaxCalculatorResult
 import pl.futurecollars.invoicing.utils.JsonService
 import spock.lang.Unroll
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static pl.futurecollars.invoicing.TestHelpers.carInvoice
 import static pl.futurecollars.invoicing.TestHelpers.company
-
-
 
 
 @SpringBootTest
@@ -35,18 +29,18 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         addMultipleInvoices(INVOICE_ENDPOINT,10)
 
         when:
-        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, "997")
+        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, company(30))
 
         then:
         taxCalculatorResponse.income ==0
-        taxCalculatorResponse.costs==0;
-        taxCalculatorResponse.earnings==0;
-        taxCalculatorResponse.incomeTax==0;
-        taxCalculatorResponse.pensionInsurance==0;
-        taxCalculatorResponse.healthInsurance==0;
-        taxCalculatorResponse.incomingVat==0;
-        taxCalculatorResponse.outgoingVat==0;
-        taxCalculatorResponse.vatToReturn ==0;
+        taxCalculatorResponse.costs==0
+        taxCalculatorResponse.earnings==0
+        taxCalculatorResponse.incomeTax==0
+        taxCalculatorResponse.pensionInsurance==30
+        taxCalculatorResponse.healthInsurance==1188
+        taxCalculatorResponse.incomingVat==0
+        taxCalculatorResponse.outgoingVat==0
+        taxCalculatorResponse.vatToReturn ==0
     }
 
     def "should calculate from invoice"() {
@@ -54,13 +48,13 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         addMultipleInvoices(INVOICE_ENDPOINT,10)
 
         when:
-        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, "10101010101010101010")
+        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, company(10))
 
         then:
         taxCalculatorResponse.income == 8000
         taxCalculatorResponse.costs == 8000
-        taxCalculatorResponse.pensionInsurance == 2
-        taxCalculatorResponse.incomingVat == 168.0
+        taxCalculatorResponse.pensionInsurance == 10
+        taxCalculatorResponse.incomeTax == 0.0
         taxCalculatorResponse.earnings == 0
         taxCalculatorResponse.incomingVat == 1680.0
         taxCalculatorResponse.outgoingVat == 1680.0
@@ -71,55 +65,39 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
     def "Tax when we used car"() {
         given:
         def inv = carInvoice()
-        addInvoiceAndReturnIdInvoice(carInvoice())
+        addInvoiceAndReturnId(INVOICE_ENDPOINT,jsonService.toJson(inv))
 
         when:
-        def taxCalculatorResponse = calc(inv.getSeller())
+        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT,inv.getSeller())
 
         then: "seller"
-        taxCalculatorResponse.income == 1676.98;
-        taxCalculatorResponse.costs == 1600.0;
-        taxCalculatorResponse.earnings == 76.98;
-        taxCalculatorResponse.pensionInsurance == 4;
-        taxCalculatorResponse.earningMinusCost == 73;
-        taxCalculatorResponse.incomeTax == 14.6262;
-        taxCalculatorResponse.finalTax == -143;
-        taxCalculatorResponse.healthInsurance == 158;
-        taxCalculatorResponse.incomingVat == 389.29;
-        taxCalculatorResponse.outgoingVat == 336.0;
-        taxCalculatorResponse.vatToReturn == 53.29;
+        taxCalculatorResponse.income == 3276.98
+        taxCalculatorResponse.costs == 3200.0
+        taxCalculatorResponse.earnings == 76.98
+        taxCalculatorResponse.pensionInsurance == 4
+        taxCalculatorResponse.earningMinusCost == 73
+        taxCalculatorResponse.incomeTax == 14.6262
+        taxCalculatorResponse.finalTax == -143
+        taxCalculatorResponse.healthInsurance == 158
+        taxCalculatorResponse.incomingVat == 725.29
+        taxCalculatorResponse.outgoingVat == 672.0
+        taxCalculatorResponse.vatToReturn == 53.29
 
         when:
-        taxCalculatorResponse = calc(inv.getBuyer())
+        taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT,inv.getBuyer())
 
         then: "buyer"
-        taxCalculatorResponse.income == 3200;
-        taxCalculatorResponse.costs == 3303.63;
-        taxCalculatorResponse.earnings == -103.63;
-        taxCalculatorResponse.pensionInsurance == 8;
-        taxCalculatorResponse.earningMinusCost == -112;
-        taxCalculatorResponse.incomeTax == -19.6897;
-        taxCalculatorResponse.finalTax == -336;
-        taxCalculatorResponse.healthInsurance == 317;
-        taxCalculatorResponse.incomingVat == 672.0;
-        taxCalculatorResponse.outgoingVat == 698.64;
-        taxCalculatorResponse.vatToReturn == -26.64;
+        taxCalculatorResponse.income == 6400
+        taxCalculatorResponse.costs == 6503.63
+        taxCalculatorResponse.earnings == -103.63
+        taxCalculatorResponse.pensionInsurance == 8
+        taxCalculatorResponse.earningMinusCost == -112
+        taxCalculatorResponse.incomeTax == -19.6897
+        taxCalculatorResponse.finalTax == -336
+        taxCalculatorResponse.healthInsurance == 317
+        taxCalculatorResponse.incomingVat == 1344.0
+        taxCalculatorResponse.outgoingVat == 1370.64
+        taxCalculatorResponse.vatToReturn == -26.64
     }
 
-
-
-
-    TaxCalculatorResult calc(Company company) {
-        def taxAsString = mockMvc.perform(
-                post("$ENDPOINT")
-                .content(jsonService.toJson(company))
-                .contentType(MediaType.APPLICATION_JSON)
-        )
-                    .andExpect(status().isOk())
-                    .andReturn()
-                    .response
-                    .contentAsString
-
-        jsonService.toObject(taxAsString, TaxCalculatorResult)
-    }
 }
