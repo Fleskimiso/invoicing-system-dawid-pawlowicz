@@ -1,5 +1,5 @@
 server:
-port: 7777
+  port: 7777
 
 invoicing-system:
   database:
@@ -21,8 +21,5 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
-  datasource:
-    url: jdbc:postgresql://localhost:5432/invoicing
-    username: postgres
-    password: password
-    driver-class-name: org.postgresql.Driver
+    flyway:
+      enabled: false
