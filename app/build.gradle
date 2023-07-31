@@ -16,6 +16,9 @@ buildscript {
         springFoxStarterVersion = '3.0.0'
         springFoxSwaggeruiVersion = '3.0.0'
         springFoxSwagger2Version = '3.0.0'
+        postgresVersion = '42.2.27'
+        flywayVersion = "7.6.0"
+        h2DatabaseVersion = "1.4.200"
     }
 }
 
@@ -47,12 +50,20 @@ dependencies {
 
     //Spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     //SpringFox
     implementation("io.springfox:springfox-boot-starter:${springFoxStarterVersion}")
     implementation ("io.springfox:springfox-swagger-ui:${springFoxSwaggeruiVersion}")
     implementation("io.springfox:springfox-swagger2:${springFoxSwagger2Version}")
+
+    //postgres
+    runtimeOnly("org.postgresql:postgresql:${postgresVersion}")
+    implementation("org.flywaydb:flyway-core:${flywayVersion}")
+
+//    runtimeOnly("com.h2database:h2:${h2DatabaseVersion}")
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -78,6 +89,22 @@ checkstyle {
     maxWarnings = 0
     maxErrors = 0
 }
+
+task testWithFileDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'file'
+}
+
+task testWithMemoryDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'memory'
+}
+
+task testWithSQLDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'sql'
+}
+
+check.dependsOn testWithFileDatabase
+check.dependsOn testWithFileDatabase
+//checkdependsOn testWithSqlDatabase
 
 test {
     finalizedBy jacocoTestReport
