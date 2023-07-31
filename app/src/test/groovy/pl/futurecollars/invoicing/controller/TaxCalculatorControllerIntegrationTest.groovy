@@ -3,7 +3,6 @@ package pl.futurecollars.invoicing.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoicing.model.Company
 import pl.futurecollars.invoicing.model.TaxCalculatorResult
@@ -16,10 +15,11 @@ import static pl.futurecollars.invoicing.TestHelpers.company
 
 
 
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Unroll
-class TaxCalculatorControllerIntegrationTest extends HelperController {
+class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
 
     @Autowired
     private MockMvc mockMvc
@@ -27,11 +27,15 @@ class TaxCalculatorControllerIntegrationTest extends HelperController {
     @Autowired
     private JsonService jsonService
 
-    private final static String ENDPOINT = "/tax"
+    private final static String TAX_ENDPOINT = "/tax"
+    private final static String INVOICE_ENDPOINT = "/invoices"
 
-    def "Return 0 when invoice not found"() {
+    def "should return 0 when not found invoice"() {
+        given:
+        addMultipleInvoices(INVOICE_ENDPOINT,10)
+
         when:
-        def taxCalculatorResponse = calc(company(0))
+        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, "997")
 
         then:
         taxCalculatorResponse.income ==0
@@ -47,17 +51,22 @@ class TaxCalculatorControllerIntegrationTest extends HelperController {
 
     def "should calculate from invoice"() {
         given:
-        addMultipleInvoices(10)
+        addMultipleInvoices(INVOICE_ENDPOINT,10)
 
         when:
-        def taxCalculatorResponse = calc(company(2))
+        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, "10101010101010101010")
 
         then:
-        taxCalculatorResponse.income == 800
-        taxCalculatorResponse.costs == 800
+        taxCalculatorResponse.income == 8000
+        taxCalculatorResponse.costs == 8000
         taxCalculatorResponse.pensionInsurance == 2
         taxCalculatorResponse.incomingVat == 168.0
+        taxCalculatorResponse.earnings == 0
+        taxCalculatorResponse.incomingVat == 1680.0
+        taxCalculatorResponse.outgoingVat == 1680.0
+        taxCalculatorResponse.vatToReturn == 0
     }
+
 
     def "Tax when we used car"() {
         given:

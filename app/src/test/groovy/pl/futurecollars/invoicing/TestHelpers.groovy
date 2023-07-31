@@ -4,7 +4,6 @@ import pl.futurecollars.invoicing.model.Car
 import pl.futurecollars.invoicing.model.Company
 import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.model.InvoiceEntry
-import pl.futurecollars.invoicing.model.TaxCalculatorResult
 import pl.futurecollars.invoicing.model.Vat
 
 import java.time.LocalDate
