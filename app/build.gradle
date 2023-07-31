@@ -62,7 +62,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql:${postgresVersion}")
     implementation("org.flywaydb:flyway-core:${flywayVersion}")
 
-//    runtimeOnly("com.h2database:h2:${h2DatabaseVersion}")
+    runtimeOnly("com.h2database:h2:${h2DatabaseVersion}")
 
 }
 
