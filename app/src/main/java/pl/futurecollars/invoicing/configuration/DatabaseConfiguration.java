@@ -8,8 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
+import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.db.file.FileBasedDatabase;
 import pl.futurecollars.invoicing.db.memory.InMemoryDatabase;
+import pl.futurecollars.invoicing.db.sql.SqlDatabase;
+import pl.futurecollars.invoicing.db.sql.jpa.InvoiceRepository;
+import pl.futurecollars.invoicing.db.sql.jpa.JpaDatabase;
 import pl.futurecollars.invoicing.service.IdService;
 import pl.futurecollars.invoicing.utils.FileService;
 import pl.futurecollars.invoicing.utils.JsonService;
@@ -45,6 +51,20 @@ public class DatabaseConfiguration {
   public InMemoryDatabase inMemoryDatabase() {
     log.debug("Creating inMemoryDatabase ");
     return new InMemoryDatabase();
+  }
+
+  @ConditionalOnProperty(name = "invoicing-system.database.type", havingValue = "sql")
+  @Bean
+  public Database sqlDatabase(JdbcTemplate jdbcTemplate) {
+    log.info("Creating sql database");
+    return new SqlDatabase(jdbcTemplate);
+  }
+
+  @ConditionalOnProperty(name = "invoicing-system.database.type", havingValue = "jpa")
+  @Bean
+  @Primary
+  public Database jpaDatabase(InvoiceRepository invoiceRepository) {
+    return new JpaDatabase(invoiceRepository);
   }
 
 }
