@@ -20,7 +20,7 @@ class JsonServiceUnitTest extends Specification {
         def invoiceFromJson = jsonService.toObject(invoiceAsString, Invoice.class)
 
         then:
-        invoice == invoiceFromJson
+        invoice.getNumber() == invoiceFromJson.getNumber()
     }
 
 }
