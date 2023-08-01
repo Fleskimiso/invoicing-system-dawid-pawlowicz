@@ -14,6 +14,7 @@ import java.time.LocalDate
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import static pl.futurecollars.invoicing.TestHelpers.clearIds
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 @SpringBootTest
@@ -27,11 +28,16 @@ class InvoiceControllerStepwiseTest extends Specification {
     @Autowired
     private JsonService jsonService
 
-    private Invoice invoice = invoice(1)
+    private Invoice invoice
     private LocalDate updatedDate = LocalDate.now()
 
     static invoiceId
     private final static String ENDPOINT = "/invoices"
+
+    def setup() {
+        clearIds()
+        invoice = invoice(1)
+    }
 
     def "empty array is returned when no invoices are added"() {
 

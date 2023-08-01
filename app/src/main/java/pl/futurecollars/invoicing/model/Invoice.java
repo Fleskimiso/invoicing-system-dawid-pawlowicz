@@ -18,6 +18,8 @@ public class Invoice {
   private int id;
   @ApiModelProperty(value = "Invoice creation date", required = true)
   private LocalDate date;
+  @ApiModelProperty(value = "Invoice number", required = true, example = "2002/01/01/0000209")
+  private String number;
   @ApiModelProperty(value = "Buyer name", required = true)
   private Company buyer;
   @ApiModelProperty(value = "Seller name", required = true)
