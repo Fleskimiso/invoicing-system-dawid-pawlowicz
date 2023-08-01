@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Company {
 
+  @ApiModelProperty(value = "Company id", required = true, example = "1")
+  private int id;
   @ApiModelProperty(value = "Tax id number", required = true, example = "1234567891")
   private String taxIdentificationNumber;
   @ApiModelProperty(value = "Company address", required = true, example = "ul.Balladyny 34/3, 56-347 Parczew")
