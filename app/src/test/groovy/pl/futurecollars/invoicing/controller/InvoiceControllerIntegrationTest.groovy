@@ -5,10 +5,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.ResultActions
-import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.utils.JsonService
-import spock.lang.Specification
 
 import java.time.LocalDate
 
@@ -18,7 +15,7 @@ import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class InvoiceControllerIntegrationTest extends Specification {
+class InvoiceControllerIntegrationTest extends ControllerTestHelper {
 
     @Autowired
     private MockMvc mockMvc
@@ -29,12 +26,12 @@ class InvoiceControllerIntegrationTest extends Specification {
     private final static String ENDPOINT = "/invoices"
 
     def setup() {
-        getAllInvoices().each { invoice -> deleteInvoice(invoice.id) }
+        getAllInvoices(ENDPOINT).each { invoice -> deleteInvoice(ENDPOINT, invoice.id) }
     }
 
     def "empty array is returned when no invoices were added"() {
         expect:
-        getAllInvoices() == []
+        getAllInvoices(ENDPOINT) == []
     }
 
     def "adding invoices returns sequential id"() {
@@ -42,18 +39,18 @@ class InvoiceControllerIntegrationTest extends Specification {
         def invoiceAsJson = invoiceAsJson(1)
 
         expect:
-        def firstId = addInvoiceAndReturnId(invoiceAsJson)
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 1
-        addInvoiceAndReturnId(invoiceAsJson) == firstId + 2
+        def firstId = addInvoiceAndReturnId(ENDPOINT, invoiceAsJson)
+        addInvoiceAndReturnId(ENDPOINT, invoiceAsJson) == firstId + 1
+        addInvoiceAndReturnId(ENDPOINT, invoiceAsJson) == firstId + 2
     }
 
     def "all invoices are returned when getting all invoices"() {
         given:
         def numberOfInvoices = 5
-        def expectedInvoices = addMultipleInvoices(numberOfInvoices)
+        def expectedInvoices = addMultipleInvoices(ENDPOINT, numberOfInvoices)
 
         when:
-        def invoices = getAllInvoices()
+        def invoices = getAllInvoices(ENDPOINT)
 
         then:
         invoices.size() == numberOfInvoices
@@ -62,11 +59,11 @@ class InvoiceControllerIntegrationTest extends Specification {
 
     def "correct invoice is returned when getting by id"() {
         given:
-        def expectedInvoices = addMultipleInvoices(5)
+        def expectedInvoices = addMultipleInvoices(ENDPOINT, 5)
         def expectedInvoice = expectedInvoices.get(2)
 
         when:
-        def invoice = getInvoiceById(expectedInvoice.getId())
+        def invoice = getInvoiceById(ENDPOINT, expectedInvoice.getId())
 
         then:
         invoice == expectedInvoice
@@ -74,7 +71,7 @@ class InvoiceControllerIntegrationTest extends Specification {
 
     def "should return 404 status when invoice is not found"() {
         given:
-        addMultipleInvoices(4)
+        addMultipleInvoices(ENDPOINT, 4)
 
         expect:
         mockMvc.perform(
@@ -85,7 +82,7 @@ class InvoiceControllerIntegrationTest extends Specification {
 
     def "should return 404 status when deleting nonexistent invoice"() {
         given:
-        addMultipleInvoices(4)
+        addMultipleInvoices(ENDPOINT, 4)
 
         expect:
         mockMvc.perform(
@@ -96,7 +93,7 @@ class InvoiceControllerIntegrationTest extends Specification {
 
     def "should return 404 status when updating nonexistent invoice"() {
         given:
-        addMultipleInvoices(5)
+        addMultipleInvoices(ENDPOINT, 5)
 
         expect:
         mockMvc.perform(
@@ -109,7 +106,7 @@ class InvoiceControllerIntegrationTest extends Specification {
 
     def "invoice can be modified"() {
         given:
-        def id = addInvoiceAndReturnId(invoiceAsJson(44))
+        def id = addInvoiceAndReturnId(ENDPOINT, invoiceAsJson(44))
         def updatedInvoice = invoice(123)
         updatedInvoice.id = id
         updatedInvoice.date = LocalDate.now()
@@ -122,67 +119,15 @@ class InvoiceControllerIntegrationTest extends Specification {
         )
                 .andExpect(status().isOk())
 
-        getInvoiceById(id) == updatedInvoice
+        getInvoiceById(ENDPOINT, id) == updatedInvoice
     }
 
     def "invoice can be deleted"() {
         given:
-        def invoices = addMultipleInvoices(5)
+        def invoices = addMultipleInvoices(ENDPOINT, 5)
 
         expect:
-        invoices.each { invoice -> deleteInvoice(invoice.getId()) }
-        getAllInvoices().size() == 0
+        invoices.each { invoice -> deleteInvoice(ENDPOINT, invoice.getId()) }
+        getAllInvoices(ENDPOINT).size() == 0
     }
-
-    private ResultActions deleteInvoice(int id) {
-        mockMvc.perform(delete("$ENDPOINT/$id"))
-                .andExpect(status().isNoContent())
-    }
-
-    private List<Invoice> getAllInvoices() {
-        def response = mockMvc.perform(get(ENDPOINT))
-                .andExpect(status().isOk())
-                .andReturn()
-                .response
-                .getContentAsString()
-
-        return jsonService.toObject(response, Invoice[])
-    }
-
-    private Invoice getInvoiceById(int id) {
-        def invoiceAsString = mockMvc.perform(get("$ENDPOINT/$id"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .response
-                .contentAsString
-
-        jsonService.toObject(invoiceAsString, Invoice)
-    }
-
-    private int addInvoiceAndReturnId(String invoiceAsJson) {
-        Integer.valueOf(
-                mockMvc.perform(
-                        post(ENDPOINT)
-                                .content(invoiceAsJson)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                        .andExpect(status().isCreated())
-                        .andReturn()
-                        .response
-                        .contentAsString
-        )
-    }
-
-    private List<Invoice> addMultipleInvoices(int count) {
-        (1..count).collect { id ->
-            def invoice = invoice(id)
-            invoice.id = addInvoiceAndReturnId(jsonService.toJson(invoice))
-            return invoice
-        }
-    }
-
-    private String invoiceAsJson(int id) {
-        jsonService.toJson(invoice(id))
-    }
-
 }
