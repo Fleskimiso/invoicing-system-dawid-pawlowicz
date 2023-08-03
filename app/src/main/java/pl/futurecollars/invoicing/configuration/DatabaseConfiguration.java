@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.db.file.FileBasedDatabase;
@@ -53,6 +54,7 @@ public class DatabaseConfiguration {
 
   @ConditionalOnProperty(name = "invoicing-system.database.type" , havingValue = "sql")
   @Bean
+  @Primary
   public Database sqlDatabase(JdbcTemplate jdbcTemplate) {
     log.info("Creating sql database");
     return new SqlDatabase(jdbcTemplate);
