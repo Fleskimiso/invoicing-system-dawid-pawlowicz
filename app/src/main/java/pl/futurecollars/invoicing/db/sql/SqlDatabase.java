@@ -50,8 +50,6 @@ public class SqlDatabase implements Database {
 
     long sellerId = sellerKeyHolder.getKey().longValue();
 
-    /*addEntriesRelatedToInvoice(invoice.getId(), invoice);*/
-
     jdbcTemplate.update(connection -> {
       PreparedStatement ps =
           connection.prepareStatement( "insert into invoice (date, number, buyer, seller) values (?, ?, ?, ?);", new String[] {"id"});
@@ -62,7 +60,11 @@ public class SqlDatabase implements Database {
       return ps;
       },   keyHolder);
 
+    addEntriesRelatedToInvoice(keyHolder.getKey().intValue(), invoice);
+
       return keyHolder.getKey().intValue();
+
+
   }
 
   @Override
@@ -99,13 +101,14 @@ public class SqlDatabase implements Database {
     invoice.getEntries().forEach(entry -> {
       jdbcTemplate.update(connection -> {
         PreparedStatement ps = connection.prepareStatement(
-            "insert into invoice_entry (description, quantity, price, vat_value, vat_rate) values (?, ?, ?, ?, ?);",
+            "insert into invoice_entry (description, quantity, price, vat_value, vat_rate, expense_related_to_car) values (?, ?, ?, ?, ?,?);",
             new String[] {"id"});
         ps.setString(1, entry.getDescription());
         ps.setInt(2, entry.getQuantity());
         ps.setBigDecimal(3, entry.getPrice());
         ps.setBigDecimal(4, entry.getVatValue());
-        ps.setInt(5, 1);
+        ps.setInt(5, getVatRate( entry.getVatRate()));
+        ps.setInt(6, getCarId(entry.getDepreciationCosts()));
         return ps;
       }, keyHolder);
 
@@ -121,6 +124,31 @@ public class SqlDatabase implements Database {
     });
 
     return invoiceId;
+  }
+
+  private int getVatRate(Vat vat) {
+    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+
+    List<Integer> vatRateIds = jdbcTemplate.query("select * from public.vat where name like '" + vat.name() + "'",
+        (rs, rowNum) -> rs.getInt("id"));
+
+    return vatRateIds.get(0);
+
+  }
+
+  private int getCarId(Car car) {
+    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps =
+          connection.prepareStatement( "insert into car (registration_number, personal_use) values (?, ?);", new String[] {"id"});
+      ps.setString(1, car.getRegistrationNum());
+      ps.setBoolean(2, car.getIfPrivateUse());
+      return ps;
+    },   keyHolder);
+
+    return keyHolder.getKey().intValue();
+
   }
 
 }
