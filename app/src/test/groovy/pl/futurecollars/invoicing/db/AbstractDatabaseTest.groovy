@@ -4,6 +4,7 @@ package pl.futurecollars.invoicing.db
 import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Specification
 
+import static pl.futurecollars.invoicing.TestHelpers.clearIds
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 abstract class AbstractDatabaseTest extends Specification {
@@ -25,6 +26,8 @@ abstract class AbstractDatabaseTest extends Specification {
         for (i in 0..<invoicesId.size()) {
             assert database.getById(invoicesId.get(i) as int).isPresent()
         }
+        cleanup:
+        clearIds()
     }
 
     def "should be able to retrieve all records from database"() {
