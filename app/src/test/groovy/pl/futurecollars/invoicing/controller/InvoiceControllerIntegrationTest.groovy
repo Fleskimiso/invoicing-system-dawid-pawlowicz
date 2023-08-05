@@ -11,6 +11,7 @@ import java.time.LocalDate
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import static pl.futurecollars.invoicing.TestHelpers.clearIds
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 @SpringBootTest
@@ -61,9 +62,8 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
         given:
         def expectedInvoices = addMultipleInvoices(ENDPOINT, 5)
         def expectedInvoice = expectedInvoices.get(2)
-
         when:
-        def invoice = getInvoiceById(ENDPOINT, expectedInvoice.getId())
+        def invoice = getInvoiceById(ENDPOINT,expectedInvoice.getId())
 
         then:
         invoice == expectedInvoice
@@ -86,7 +86,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
 
         expect:
         mockMvc.perform(
-                delete("$ENDPOINT/34")
+                delete("$ENDPOINT/3489")
         )
                 .andExpect(status().isNotFound())
     }
@@ -97,7 +97,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
 
         expect:
         mockMvc.perform(
-                put("$ENDPOINT/45")
+                put("$ENDPOINT/495")
                         .content(invoiceAsJson(1))
                         .contentType(MediaType.APPLICATION_JSON)
         )

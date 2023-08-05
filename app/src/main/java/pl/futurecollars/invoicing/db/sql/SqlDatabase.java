@@ -83,29 +83,33 @@ public class SqlDatabase implements Database {
 
   @Override
   public Optional<Invoice> update(int id, Invoice updatedInvoice) {
-    Invoice originalInvoice = invoiceRowMapper(id).get(0);
+    try {
+      Invoice originalInvoice = invoiceRowMapper(id).get(0);
 
-    updateCompany(updatedInvoice.getBuyer(), originalInvoice.getBuyer());
-    updateCompany(updatedInvoice.getSeller(), originalInvoice.getSeller());
+      updateCompany(updatedInvoice.getBuyer(), originalInvoice.getBuyer());
+      updateCompany(updatedInvoice.getSeller(), originalInvoice.getSeller());
 
-    jdbcTemplate.update(connection -> {
-      PreparedStatement ps =
-          connection.prepareStatement(
-              "update invoice "
-                  + "set date=?, "
-                  + "number=? "
-                  + "where id=?"
-          );
-      ps.setDate(1, Date.valueOf(updatedInvoice.getDate()));
-      ps.setString(2, updatedInvoice.getNumber());
-      ps.setInt(3, id);
-      return ps;
-    });
+      jdbcTemplate.update(connection -> {
+        PreparedStatement ps =
+            connection.prepareStatement(
+                "update invoice "
+                    + "set date=?, "
+                    + "number=? "
+                    + "where id=?"
+            );
+        ps.setDate(1, Date.valueOf(updatedInvoice.getDate()));
+        ps.setString(2, updatedInvoice.getNumber());
+        ps.setInt(3, id);
+        return ps;
+      });
 
-    deleteEntriesAndCarsRelatedToInvoice(id);
-    addEntriesRelatedToInvoice(id, updatedInvoice);
+      deleteEntriesAndCarsRelatedToInvoice(id);
+      addEntriesRelatedToInvoice(id, updatedInvoice);
 
-    return Optional.of(originalInvoice);
+      return Optional.of(originalInvoice);
+    } catch (Exception exception) {
+      throw new IllegalArgumentException("Couldn't update invoice with id: " + id, exception.getCause());
+    }
   }
 
   private void updateCompany(Company buyer, Company buyer2) {
@@ -150,15 +154,15 @@ public class SqlDatabase implements Database {
 
   private List<Invoice> invoiceRowMapper(Integer id) {
     String baseQuery = "select i.id, i.date, i.number, "
-          + "c1.name as seller_name, c1.address as seller_address, "
-          + "c1.id as seller_id, c1.tax_identification_number as seller_tax_identification, c1.pension_insurance as seller_pension_insurance,"
-          + "c1.health_insurance as seller_health_insurance, "
-          + "c2.id as buyer_id, c2.name as buyer_name, c2.address as buyer_address, "
-          + "c2.tax_identification_number as buyer_tax_identification, c2.pension_insurance as buyer_pension_insurance, "
-          + "c2.health_insurance as buyer_health_insurance "
-          + "from invoice i "
-          + "inner join company c1 on i.seller = c1.id "
-          + "inner join company c2 on i.buyer = c2.id";
+        + "c1.name as seller_name, c1.address as seller_address, "
+        + "c1.id as seller_id, c1.tax_identification_number as seller_tax_identification, c1.pension_insurance as seller_pension_insurance,"
+        + "c1.health_insurance as seller_health_insurance, "
+        + "c2.id as buyer_id, c2.name as buyer_name, c2.address as buyer_address, "
+        + "c2.tax_identification_number as buyer_tax_identification, c2.pension_insurance as buyer_pension_insurance, "
+        + "c2.health_insurance as buyer_health_insurance "
+        + "from invoice i "
+        + "inner join company c1 on i.seller = c1.id "
+        + "inner join company c2 on i.buyer = c2.id";
 
     if (id != null) {
       baseQuery += " where i.id ='" + id + "'";
@@ -171,9 +175,9 @@ public class SqlDatabase implements Database {
 
           List<InvoiceEntry> invoiceEntries = jdbcTemplate.query(
               "select * from invoice_invoice_entry iie "
-              + "inner join invoice_entry e on iie.invoice_entry_id = e.id "
-              + "left outer join car c on e.expense_related_to_car = c.id "
-              + "where invoice_id = " + invoiceId,
+                  + "inner join invoice_entry e on iie.invoice_entry_id = e.id "
+                  + "left outer join car c on e.expense_related_to_car = c.id "
+                  + "where invoice_id = " + invoiceId,
               (response, ignored) -> InvoiceEntry.builder()
                   .id(response.getInt("id"))
                   .description(response.getString("description"))
@@ -225,7 +229,7 @@ public class SqlDatabase implements Database {
         ps.setInt(2, entry.getQuantity());
         ps.setBigDecimal(3, entry.getPrice());
         ps.setBigDecimal(4, entry.getVatValue());
-        ps.setInt(5, getVatRate(entry.getVatRate()));
+        ps.setInt(5, getVatRateId(entry.getVatRate()));
         ps.setInt(6, getCarId(entry.getDepreciationCosts()));
         return ps;
       }, keyHolder);
@@ -244,7 +248,7 @@ public class SqlDatabase implements Database {
     return invoiceId;
   }
 
-  private int getVatRate(Vat vat) {
+  private int getVatRateId(Vat vat) {
     GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
     List<Integer> vatRateIds = jdbcTemplate.query("select * from public.vat where name like '" + vat.name() + "'",
@@ -270,9 +274,9 @@ public class SqlDatabase implements Database {
   }
 
   private Vat idToVat(int id) {
-    Integer rate = jdbcTemplate.queryForObject("select rate from vat where id = ?", new Object[] {id}, Integer.class);
+    String vatRateName = jdbcTemplate.queryForObject("select name from vat where id = ?", new Object[] {id}, String.class);
 
-    return rate != null ? Vat.valueOf("VAT_" + rate) : null;
+    return vatRateName != null ? Vat.valueOf(vatRateName) : null;
   }
 
   private void deleteEntriesAndCarsRelatedToInvoice(int id) {

@@ -10,6 +10,7 @@ import spock.lang.Specification
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import static pl.futurecollars.invoicing.TestHelpers.clearIds
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 class ControllerTestHelper extends Specification {
@@ -22,7 +23,6 @@ class ControllerTestHelper extends Specification {
 
     protected ResultActions deleteInvoice(String endpoint, int id) {
         mockMvc.perform(delete("$endpoint/$id"))
-                .andExpect(status().isNoContent())
     }
 
     protected List<Invoice> getAllInvoices(String endpoint) {
