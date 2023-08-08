@@ -66,6 +66,9 @@ dependencies {
     implementation("org.flywaydb:flyway-core:${flywayVersion}")
 
     runtimeOnly("com.h2database:h2:${h2DatabaseVersion}")
+
+    //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
