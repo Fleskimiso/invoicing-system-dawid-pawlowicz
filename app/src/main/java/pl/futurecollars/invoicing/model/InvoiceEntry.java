@@ -1,7 +1,13 @@
 package pl.futurecollars.invoicing.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +17,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
 public class InvoiceEntry {
 
+  @Id
+  @JsonIgnore
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @ApiModelProperty(value = "Invoice entry id", required = true, example = "1")
   private int id;
   @ApiModelProperty(value = "Invoice entry description", required = true, example = "Laptop acer aspire 5")
@@ -25,6 +35,7 @@ public class InvoiceEntry {
   private BigDecimal vatValue;
   @ApiModelProperty(value = "Invoice entry vat rate", required = true, example = "VAT_21")
   private Vat vatRate;
+  @OneToOne
   @ApiModelProperty(value = "Optional expenses for the car")
   private Car depreciationCosts;
 }
