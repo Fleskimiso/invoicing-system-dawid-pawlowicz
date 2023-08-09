@@ -31,11 +31,22 @@ public class JpaDatabase implements Database {
 
   @Override
   public Optional<Invoice> update(int id, Invoice updatedInvoice) {
-    return Optional.empty();
+    Optional<Invoice> invoice = getById(id);
+    if(invoice.isPresent()){
+      Invoice inv = invoice.get();
+
+      updatedInvoice.setId(id);
+      updatedInvoice.getBuyer().setId(inv.getBuyer().getId());
+      updatedInvoice.getSeller().setId(inv.getSeller().getId());
+
+      invoiceRepository.save(updatedInvoice);
+    }
+    return invoice;
   }
 
   @Override
   public void delete(int id) {
-
+    Optional<Invoice> invoice = getById(id);
+    invoice.ifPresent(invoiceRepository::delete);
   }
 }
