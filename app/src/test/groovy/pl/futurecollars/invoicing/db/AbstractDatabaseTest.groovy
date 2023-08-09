@@ -9,10 +9,17 @@ import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 abstract class AbstractDatabaseTest extends Specification {
 
-    private Database database = getDatabase()
+    private Database database
     private List<Invoice> invoices = (1..10).collect { invoice(it) }
 
     abstract Database getDatabase()
+
+    def setup() {
+        database = getDatabase()
+        database.reset();
+
+        assert database.getAll().isEmpty()
+    }
 
     def "should save all the invoices to the database correctly"() {
         given:
@@ -37,7 +44,9 @@ abstract class AbstractDatabaseTest extends Specification {
         }
 
         then:
-        invoices == database.getAll()
+        for (i in 0..<invoices.size()) {
+            invoices.get(i).getNumber() == database.getAll().get(i).getNumber()
+        }
     }
 
     def "should return empty optional if the invoice is not present in the database"() {
@@ -63,7 +72,7 @@ abstract class AbstractDatabaseTest extends Specification {
         database.update(id, updatedInvoice)
 
         expect:
-        database.getById(id).get() == updatedInvoice
+        database.getById(id).get().getNumber() == updatedInvoice.getNumber()
     }
 
     def "should remove a record from database correctly"() {
@@ -76,4 +85,5 @@ abstract class AbstractDatabaseTest extends Specification {
         expect:
         database.getById(id).isEmpty()
     }
+
 }

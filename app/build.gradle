@@ -88,6 +88,13 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+task testWithJpaDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'jpa'
+    useJUnitPlatform()
+}
+
+check.dependsOn testWithJpaDatabase
+
 checkstyle {
     showViolations = true
     ignoreFailures = false
