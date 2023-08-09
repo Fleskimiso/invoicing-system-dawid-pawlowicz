@@ -55,7 +55,6 @@ public class DatabaseConfiguration {
 
   @ConditionalOnProperty(name = "invoicing-system.database.type", havingValue = "sql")
   @Bean
-  @Primary
   public Database sqlDatabase(JdbcTemplate jdbcTemplate) {
     log.info("Creating sql database");
     return new SqlDatabase(jdbcTemplate);
@@ -63,6 +62,7 @@ public class DatabaseConfiguration {
 
   @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "jpa")
   @Bean
+  @Primary
   public Database jpaDatabase(InvoiceRepository invoiceRepository) {
     return new JpaDatabase(invoiceRepository);
   }

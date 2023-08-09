@@ -31,17 +31,19 @@ public class JpaDatabase implements Database {
 
   @Override
   public Optional<Invoice> update(int id, Invoice updatedInvoice) {
-    Optional<Invoice> invoice = getById(id);
-    if(invoice.isPresent()){
-      Invoice inv = invoice.get();
+    Optional<Invoice> invoiceOptional = getById(id);
 
-      updatedInvoice.setId(id);
-      updatedInvoice.getBuyer().setId(inv.getBuyer().getId());
-      updatedInvoice.getSeller().setId(inv.getSeller().getId());
+    if (invoiceOptional.isPresent()) {
+      Invoice invoice = invoiceOptional.get();
+
+      updatedInvoice.setId(id); // just in case it was not set
+      updatedInvoice.getBuyer().setId(invoice.getBuyer().getId());
+      updatedInvoice.getSeller().setId(invoice.getSeller().getId());
 
       invoiceRepository.save(updatedInvoice);
     }
-    return invoice;
+
+    return invoiceOptional;
   }
 
   @Override

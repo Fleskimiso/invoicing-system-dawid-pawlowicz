@@ -32,13 +32,13 @@ public class Invoice {
   private LocalDate date;
   @ApiModelProperty(value = "Invoice number", required = true, example = "2002/01/01/0000209")
   private String number;
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   @ApiModelProperty(value = "Buyer name", required = true)
   private Company buyer;
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   @ApiModelProperty(value = "Seller name", required = true)
   private Company seller;
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
   @ApiModelProperty(value = "Invoice entries", required = true)
   private List<InvoiceEntry> entries;
 

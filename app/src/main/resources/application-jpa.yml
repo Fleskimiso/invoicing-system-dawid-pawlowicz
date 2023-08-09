@@ -1,5 +1,7 @@
 spring:
   jpa:
+    hibernate:
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQL94Dialect
@@ -10,5 +12,4 @@ spring:
     driver-class-name: org.postgresql.Driver
 
 invoicing-system:
-  database:
-    type: sql
+  database: jpa
