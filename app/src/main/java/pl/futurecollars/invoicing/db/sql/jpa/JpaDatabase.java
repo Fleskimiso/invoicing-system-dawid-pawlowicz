@@ -33,15 +33,16 @@ public class JpaDatabase implements Database {
   public Optional<Invoice> update(int id, Invoice updatedInvoice) {
     Optional<Invoice> invoiceOptional = getById(id);
 
-    if (invoiceOptional.isPresent()) {
-      Invoice invoice = invoiceOptional.get();
-
-      updatedInvoice.setId(id); // just in case it was not set
-      updatedInvoice.getBuyer().setId(invoice.getBuyer().getId());
-      updatedInvoice.getSeller().setId(invoice.getSeller().getId());
-
-      invoiceRepository.save(updatedInvoice);
+    if (!invoiceOptional.isPresent()) {
+      throw new IllegalArgumentException("Invoice with ID " + id + " does not exist and cannot be updated.");
     }
+
+    Invoice invoice = invoiceOptional.get();
+    updatedInvoice.setId(id); // just in case it was not set
+    updatedInvoice.getBuyer().setId(invoice.getBuyer().getId());
+    updatedInvoice.getSeller().setId(invoice.getSeller().getId());
+
+    invoiceRepository.save(updatedInvoice);
 
     return invoiceOptional;
   }

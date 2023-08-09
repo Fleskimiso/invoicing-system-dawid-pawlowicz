@@ -187,7 +187,7 @@ public class SqlDatabase implements Database {
                   .vatRate(idToVat(response.getInt("vat_rate")))
                   .depreciationCosts(response.getObject("registration_number") != null
                       ? Car.builder()
-                      .registrationNummber(response.getString("registration_number"))
+                      .registrationNum(response.getString("registration_number"))
                       .ifPrivateUse(response.getBoolean("personal_use"))
                       .build()
                       : null)
@@ -264,7 +264,7 @@ public class SqlDatabase implements Database {
     jdbcTemplate.update(connection -> {
       PreparedStatement ps =
           connection.prepareStatement("insert into car (registration_number, personal_use) values (?, ?);", new String[] {"id"});
-      ps.setString(1, car.getRegistrationNummber());
+      ps.setString(1, car.getRegistrationNum());
       ps.setBoolean(2, car.getIfPrivateUse());
       return ps;
     }, keyHolder);
