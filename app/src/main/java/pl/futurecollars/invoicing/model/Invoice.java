@@ -9,10 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,7 +37,7 @@ public class Invoice {
   @OneToOne(cascade = CascadeType.ALL)
   @ApiModelProperty(value = "Seller name", required = true)
   private Company seller;
-  @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @ApiModelProperty(value = "Invoice entries", required = true)
   private List<InvoiceEntry> entries;
 

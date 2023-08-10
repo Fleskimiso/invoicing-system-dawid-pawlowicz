@@ -23,4 +23,5 @@ logging:
 
 
 invoicing-system:
-  database: jpa
+  database:
+    type: jpa
