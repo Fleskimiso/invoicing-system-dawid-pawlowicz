@@ -36,8 +36,8 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         taxCalculatorResponse.costs==0
         taxCalculatorResponse.earnings==0
         taxCalculatorResponse.incomeTax==0
-        taxCalculatorResponse.pensionInsurance==30
-        taxCalculatorResponse.healthInsurance==1188
+        taxCalculatorResponse.pensionInsurance==20
+        taxCalculatorResponse.healthInsurance==8.61
         taxCalculatorResponse.incomingVat==0
         taxCalculatorResponse.outgoingVat==0
         taxCalculatorResponse.vatToReturn ==0
@@ -53,11 +53,9 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         then:
         taxCalculatorResponse.income == 8000
         taxCalculatorResponse.costs == 8000
-        taxCalculatorResponse.pensionInsurance == 10
+        taxCalculatorResponse.pensionInsurance == 20
         taxCalculatorResponse.incomeTax == 0.0
         taxCalculatorResponse.earnings == 0
-        taxCalculatorResponse.pensionInsurance == 10
-        taxCalculatorResponse.incomeTax == 0.0
         taxCalculatorResponse.incomingVat == 1680.0
         taxCalculatorResponse.outgoingVat == 1680.0
         taxCalculatorResponse.vatToReturn == 0
@@ -73,32 +71,32 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT,inv.getSeller())
 
         then: "seller"
-        taxCalculatorResponse.income == 3276.98
+        taxCalculatorResponse.income == 3600.0
         taxCalculatorResponse.costs == 3200.0
-        taxCalculatorResponse.earnings == 76.98
-        taxCalculatorResponse.pensionInsurance == 4
-        taxCalculatorResponse.earningMinusCost == 73
-        taxCalculatorResponse.incomeTax == 14.6262
-        taxCalculatorResponse.finalTax == -143
-        taxCalculatorResponse.healthInsurance == 158
-        taxCalculatorResponse.incomingVat == 725.29
+        taxCalculatorResponse.earnings == 400.0
+        taxCalculatorResponse.pensionInsurance == 20
+        taxCalculatorResponse.earningMinusCost == 380
+        taxCalculatorResponse.incomeTax == 76.0
+        taxCalculatorResponse.finalTax == 67
+        taxCalculatorResponse.healthInsurance == 8.61
+        taxCalculatorResponse.incomingVat == 756.0
         taxCalculatorResponse.outgoingVat == 672.0
-        taxCalculatorResponse.vatToReturn == 53.29
+        taxCalculatorResponse.vatToReturn == 84
 
         when:
         taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT,inv.getBuyer())
 
         then: "buyer"
         taxCalculatorResponse.income == 6400
-        taxCalculatorResponse.costs == 6503.63
-        taxCalculatorResponse.earnings == -103.63
-        taxCalculatorResponse.pensionInsurance == 8
-        taxCalculatorResponse.earningMinusCost == -112
-        taxCalculatorResponse.incomeTax == -19.6897
-        taxCalculatorResponse.finalTax == -336
-        taxCalculatorResponse.healthInsurance == 317
+        taxCalculatorResponse.costs == 6800
+        taxCalculatorResponse.earnings == -400
+        taxCalculatorResponse.pensionInsurance == 20
+        taxCalculatorResponse.earningMinusCost == -420
+        taxCalculatorResponse.incomeTax == -76
+        taxCalculatorResponse.finalTax == -84
+        taxCalculatorResponse.healthInsurance == 8.61
         taxCalculatorResponse.incomingVat == 1344.0
-        taxCalculatorResponse.outgoingVat == 1370.64
-        taxCalculatorResponse.vatToReturn == -26.64
+        taxCalculatorResponse.outgoingVat == 1428.0
+        taxCalculatorResponse.vatToReturn == -84.0
     }
 }
