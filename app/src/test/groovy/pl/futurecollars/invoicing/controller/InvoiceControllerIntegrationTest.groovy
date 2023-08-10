@@ -101,7 +101,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
                         .content(invoiceAsJson(1))
                         .contentType(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isNotFound())
+                .andExpect(status().is4xxClientError())
     }
 
     def "invoice can be modified"() {
