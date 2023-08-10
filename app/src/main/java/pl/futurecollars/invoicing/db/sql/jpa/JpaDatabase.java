@@ -25,7 +25,7 @@ public class JpaDatabase implements Database {
 
   @Override
   public List<Invoice> getAll() {
-    return StreamSupport.stream(invoiceRepository.findAll().spliterator(),false)
+    return StreamSupport.stream(invoiceRepository.findAll().spliterator(), false)
         .collect(Collectors.toList());
   }
 

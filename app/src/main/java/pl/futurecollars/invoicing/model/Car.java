@@ -1,6 +1,5 @@
 package pl.futurecollars.invoicing.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +18,6 @@ import lombok.NoArgsConstructor;
 public class Car {
 
   @Id
-  @JsonIgnore
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @ApiModelProperty(value = "Car id", required = true, example = "1")
   private int id;
