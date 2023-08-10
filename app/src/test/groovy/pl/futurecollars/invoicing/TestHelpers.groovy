@@ -23,6 +23,8 @@ class TestHelpers {
                 .name("Some Industry $id Sp. z o.o")
                 .healthInsurance(new BigDecimal(10).setScale(2))
                 .pensionInsurance(new BigDecimal(20).setScale(2))
+                .pensionInsurance(BigDecimal.ONE * BigDecimal.valueOf(id))
+                .healthInsurance(BigDecimal.valueOf(46) * BigDecimal.valueOf(id))
                 .build()
     }
 
@@ -63,5 +65,27 @@ class TestHelpers {
         setCompanyId(1)
         setEntryId(1)
     }
+    static Car(){
+        Car.builder()
+                .ifPrivateUse(true)
+                .build()
+    }
 
+    static invoiceEntry(){
+        InvoiceEntry.builder()
+            .vatValue(BigDecimal.valueOf(53.29))
+            .price(BigDecimal.valueOf(76.98))
+            .depreciationCosts(Car())
+        .build()
+    }
+
+    static carInvoice(){
+        Invoice.builder()
+                .seller(company(4))
+                .buyer(company(8))
+                .entries(List.of(invoiceEntry()))
+                .date(LocalDate.now())
+                .build()
+
+    }
 }

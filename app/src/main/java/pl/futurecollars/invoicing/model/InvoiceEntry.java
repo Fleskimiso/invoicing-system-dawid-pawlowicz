@@ -36,7 +36,6 @@ public class InvoiceEntry {
   @ApiModelProperty(value = "Invoice entry vat rate", required = true, example = "VAT_21")
   private Vat vatRate;
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "id")
   @ApiModelProperty(value = "Optional expenses for the car")
   private Car depreciationCosts;
 }
