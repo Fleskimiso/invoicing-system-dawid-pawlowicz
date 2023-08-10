@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Car {
 
-
   @ApiModelProperty(value = "Car id", required = true, example = "1")
   private int id;
   @ApiModelProperty(value = "Car registration number", required = true, example = "ABC 467h")

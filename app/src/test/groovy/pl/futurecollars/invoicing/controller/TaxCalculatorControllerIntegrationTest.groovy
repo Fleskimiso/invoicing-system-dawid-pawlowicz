@@ -36,8 +36,8 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         taxCalculatorResponse.costs==0
         taxCalculatorResponse.earnings==0
         taxCalculatorResponse.incomeTax==0
-        taxCalculatorResponse.pensionInsurance==30
-        taxCalculatorResponse.healthInsurance==1188
+        taxCalculatorResponse.pensionInsurance==20
+        taxCalculatorResponse.healthInsurance==8.61
         taxCalculatorResponse.incomingVat==0
         taxCalculatorResponse.outgoingVat==0
         taxCalculatorResponse.vatToReturn ==0
@@ -53,11 +53,9 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         then:
         taxCalculatorResponse.income == 8000
         taxCalculatorResponse.costs == 8000
-        taxCalculatorResponse.pensionInsurance == 10
+        taxCalculatorResponse.pensionInsurance == 20
         taxCalculatorResponse.incomeTax == 0.0
         taxCalculatorResponse.earnings == 0
-        taxCalculatorResponse.pensionInsurance == 10
-        taxCalculatorResponse.incomeTax == 0.0
         taxCalculatorResponse.incomingVat == 1680.0
         taxCalculatorResponse.outgoingVat == 1680.0
         taxCalculatorResponse.vatToReturn == 0
@@ -76,11 +74,11 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         taxCalculatorResponse.income == 3276.98
         taxCalculatorResponse.costs == 3200.0
         taxCalculatorResponse.earnings == 76.98
-        taxCalculatorResponse.pensionInsurance == 4
-        taxCalculatorResponse.earningMinusCost == 73
+        taxCalculatorResponse.pensionInsurance == 20.0
+        taxCalculatorResponse.earningMinusCost == 57
         taxCalculatorResponse.incomeTax == 14.6262
-        taxCalculatorResponse.finalTax == -143
-        taxCalculatorResponse.healthInsurance == 158
+        taxCalculatorResponse.finalTax == 6
+        taxCalculatorResponse.healthInsurance == 8.61
         taxCalculatorResponse.incomingVat == 725.29
         taxCalculatorResponse.outgoingVat == 672.0
         taxCalculatorResponse.vatToReturn == 53.29
@@ -90,15 +88,15 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
 
         then: "buyer"
         taxCalculatorResponse.income == 6400
-        taxCalculatorResponse.costs == 6503.63
-        taxCalculatorResponse.earnings == -103.63
-        taxCalculatorResponse.pensionInsurance == 8
-        taxCalculatorResponse.earningMinusCost == -112
-        taxCalculatorResponse.incomeTax == -19.6897
-        taxCalculatorResponse.finalTax == -336
-        taxCalculatorResponse.healthInsurance == 317
+        taxCalculatorResponse.costs == 6476.98
+        taxCalculatorResponse.earnings == -76.98
+        taxCalculatorResponse.pensionInsurance == 20.0
+        taxCalculatorResponse.earningMinusCost == -97
+        taxCalculatorResponse.incomeTax == -14.6262
+        taxCalculatorResponse.finalTax == -23
+        taxCalculatorResponse.healthInsurance == 8.61
         taxCalculatorResponse.incomingVat == 1344.0
-        taxCalculatorResponse.outgoingVat == 1370.64
-        taxCalculatorResponse.vatToReturn == -26.64
+        taxCalculatorResponse.outgoingVat == 1397.29
+        taxCalculatorResponse.vatToReturn == -53.29
     }
 }
