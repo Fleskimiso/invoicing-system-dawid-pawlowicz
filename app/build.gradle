@@ -19,6 +19,7 @@ buildscript {
         postgresVersion = '42.2.27'
         flywayVersion = "7.6.0"
         h2DatabaseVersion = "1.4.200"
+        mongoVersion = "3.12.10"
     }
 }
 
@@ -69,6 +70,8 @@ dependencies {
 
     //jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //mongo
+    implementation ("org.mongodb:mongo-java-driver:${mongoVersion}")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
