@@ -7,6 +7,7 @@ import org.bson.Document;
 
 @RequiredArgsConstructor
 public class MongoIdProvider {
+
   private static final String LAST_VALUE_KEY = "lastValue";
   private static final String ID_VALUE = "invoiceCounter";
   private static final String ID_KEY = "_id";

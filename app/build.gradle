@@ -96,7 +96,13 @@ task testWithJpaDatabase(type: Test) {
     useJUnitPlatform()
 }
 
+task testWithMongoDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'mongo'
+    useJUnitPlatform()
+}
+
 check.dependsOn testWithJpaDatabase
+check.dependsOn testWithMongoDatabase
 
 checkstyle {
     showViolations = true

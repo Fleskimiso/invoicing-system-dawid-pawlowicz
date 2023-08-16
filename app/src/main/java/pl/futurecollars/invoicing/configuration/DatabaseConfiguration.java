@@ -80,7 +80,7 @@ public class DatabaseConfiguration {
     return new JpaDatabase(invoiceRepository);
   }
 
-  @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "mongo")
+  @ConditionalOnProperty(name = "invoicing-system.database.type", havingValue = "mongo")
   @Bean
   public MongoDatabase mongoDb(
       @Value("${invoicing-system.database.name}") String databaseName
@@ -97,7 +97,7 @@ public class DatabaseConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "mongo")
+  @ConditionalOnProperty(name = "invoicing-system.database.type", havingValue = "mongo")
   public MongoIdProvider mongoIdProvider(
       @Value("${invoicing-system.database.counter.collection}") String collectionName,
       MongoDatabase mongoDb
@@ -108,13 +108,14 @@ public class DatabaseConfiguration {
 
   @Bean
   @Primary
-  @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "mongo")
+  @ConditionalOnProperty(name = "invoicing-system.database.type", havingValue = "mongo")
   public Database mongoDatabase(
       @Value("${invoicing-system.database.collection}") String collectionName,
       MongoDatabase mongoDb,
       MongoIdProvider mongoIdProvider
   ) {
     MongoCollection<Invoice> collection = mongoDb.getCollection(collectionName, Invoice.class);
+    log.info("Creating mongo database");
     return new MongoBasedDatabase(collection, mongoIdProvider);
   }
 }

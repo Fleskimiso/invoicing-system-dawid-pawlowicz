@@ -20,7 +20,7 @@ public class MongoBasedDatabase implements Database {
   public int save(Invoice invoice) {
     invoice.setId((int) idProvider.getNextIdAndIncrement());
     collection.insertOne(invoice);
-    return 0;
+    return invoice.getId();
   }
 
   @Override
@@ -38,15 +38,24 @@ public class MongoBasedDatabase implements Database {
 
   @Override
   public Optional<Invoice> update(int id, Invoice updatedInvoice) {
-    updatedInvoice.setId(id);
-    return Optional.ofNullable(
-        collection.findOneAndReplace(idFilter(id), updatedInvoice)
-    );
+    if (getById(id).isPresent()) {
+      updatedInvoice.setId(id);
+      return Optional.ofNullable(
+          collection.findOneAndReplace(idFilter(id), updatedInvoice)
+      );
+    } else {
+      throw new IllegalArgumentException("Couldn't update invoice with id: " + id);
+    }
+
   }
 
   @Override
   public void delete(int id) {
-    collection.findOneAndDelete(idFilter(id));
+    if (getById(id).isPresent()) {
+      collection.findOneAndDelete(idFilter(id));
+    } else {
+      throw new RuntimeException("No invoice is present with id: " + id);
+    }
   }
 
   private Document idFilter(long id) {
