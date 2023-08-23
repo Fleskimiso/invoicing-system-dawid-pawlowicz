@@ -25,6 +25,7 @@ public class SpringFoxConfiguration {
         .paths(PathSelectors.any())
         .build()
         .tags(new Tag("invoice-controller", "Controller used to manage invoices"))
+        .tags(new Tag("company-controller", "Controller used to manage companies"))
         .apiInfo(apiInfo());
   }
 

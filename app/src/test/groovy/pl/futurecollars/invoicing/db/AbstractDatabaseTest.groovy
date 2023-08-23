@@ -9,7 +9,7 @@ import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 abstract class AbstractDatabaseTest extends Specification {
 
-    private Database database
+    private Database<Invoice> database
     private List<Invoice> invoices = (1..10).collect { invoice(it) }
 
     abstract Database getDatabase()
@@ -86,4 +86,11 @@ abstract class AbstractDatabaseTest extends Specification {
         database.getById(id).isEmpty()
     }
 
+    def "should throw exception on deleting nonexistent record"(){
+        when:
+        database.delete(34)
+
+        then:
+        thrown(RuntimeException)
+    }
 }

@@ -3,10 +3,7 @@ server:
 
 invoicing-system:
   database:
-    type: file
-    location: db
-    invoices.filename: records.txt
-    id.filename: id.txt
+    type: memory
 logging:
   level:
     org:

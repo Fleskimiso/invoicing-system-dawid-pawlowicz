@@ -7,76 +7,77 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.model.Invoice;
+import pl.futurecollars.invoicing.model.WithId;
 import pl.futurecollars.invoicing.service.IdService;
 import pl.futurecollars.invoicing.utils.FileService;
 import pl.futurecollars.invoicing.utils.JsonService;
 
 @AllArgsConstructor
-public class FileBasedDatabase implements Database {
+public class FileBasedDatabase<T extends WithId> implements Database<T> {
 
   private final Path databasePath;
   private final IdService idService;
   private final JsonService jsonService;
   private final FileService fileService;
+  private final Class<T> clazz;
 
   @Override
-  public int save(Invoice invoice) {
+  public int save(T item) {
     try {
-      invoice.setId(idService.getNextIdAndSaveIncremented());
-      fileService.appendToFile(databasePath, jsonService.toJson(invoice));
-      return invoice.getId();
+      item.setId(idService.getNextIdAndSaveIncremented());
+      fileService.appendToFile(databasePath, jsonService.toJson(item));
+      return item.getId();
     } catch (IOException exception) {
-      throw new RuntimeException("Failed to save the invoice", exception);
+      throw new RuntimeException("Failed to save the item", exception);
     }
   }
 
   @Override
-  public Optional<Invoice> getById(int id) {
+  public Optional<T> getById(int id) {
     try {
       return fileService.readLinesFromFile(databasePath)
           .stream()
           .filter(line -> containsId(line, id))
-          .map(line -> jsonService.toObject(line, Invoice.class))
+          .map(line -> jsonService.toObject(line, clazz))
           .findFirst();
     } catch (IOException exception) {
-      throw new RuntimeException("Failed to find invoice with given id: " + id, exception);
+      throw new RuntimeException("Failed to find item with given id: " + id, exception);
     }
   }
 
   @Override
-  public List<Invoice> getAll() {
+  public List<T> getAll() {
     try {
       return fileService.readLinesFromFile(databasePath)
           .stream()
-          .map(line -> jsonService.toObject(line, Invoice.class))
+          .map(line -> jsonService.toObject(line, clazz))
           .collect(Collectors.toList());
     } catch (IOException exception) {
-      throw new RuntimeException("Failed to read invoices from file", exception);
+      throw new RuntimeException("Failed to read item from file", exception);
     }
   }
 
   @Override
-  public Optional<Invoice> update(int id, Invoice updatedInvoice) {
+  public Optional<T> update(int id, T updatedItem) {
     try {
-      List<String> allInvoices = fileService.readLinesFromFile(databasePath);
-      List<String> filteredInvoices = allInvoices
+      List<String> allRecords = fileService.readLinesFromFile(databasePath);
+      List<String> filteredRecords = allRecords
           .stream()
           .filter(line -> !containsId(line, id))
           .collect(Collectors.toList());
 
-      if (filteredInvoices.size() == allInvoices.size()) {
+      if (filteredRecords.size() == allRecords.size()) {
         throw new IllegalArgumentException("No record with such id exists: " + id);
       }
 
-      updatedInvoice.setId(id);
-      filteredInvoices.add(jsonService.toJson(updatedInvoice));
+      updatedItem.setId(id);
+      filteredRecords.add(jsonService.toJson(updatedItem));
 
-      fileService.writeLinesToFile(databasePath, filteredInvoices);
+      fileService.writeLinesToFile(databasePath, filteredRecords);
 
-      return Optional.of(updatedInvoice);
+      return Optional.of(updatedItem);
     } catch (IOException exception) {
-      throw new RuntimeException("Failed to update invoice with id: " + id, exception);
+      throw new RuntimeException("Failed to update item with id: " + id, exception);
     }
 
   }
@@ -97,11 +98,11 @@ public class FileBasedDatabase implements Database {
       }
 
     } catch (IOException ex) {
-      throw new RuntimeException("Failed to delete invoice with id: " + id, ex);
+      throw new RuntimeException("Failed to delete item with id: " + id, ex);
     }
   }
 
-  public boolean containsId(String line, int id) {
+  private boolean containsId(String line, int id) {
     return line.contains("\"id\":" + id);
   }
 
