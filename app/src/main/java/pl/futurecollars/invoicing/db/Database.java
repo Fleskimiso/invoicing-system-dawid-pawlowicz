@@ -7,29 +7,30 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.InvoiceEntry;
+import pl.futurecollars.invoicing.model.WithId;
 
-public interface Database {
+public interface Database<T extends WithId> {
 
-  int save(Invoice invoice);
+  int save(T item);
 
-  Optional<Invoice> getById(int id);
+  Optional<T> getById(int id);
 
-  List<Invoice> getAll();
+  List<T> getAll();
 
-  Optional<Invoice> update(int id, Invoice updatedInvoice);
+  Optional<T> update(int id, T updatedInvoice);
 
   void delete(int id);
 
-  default BigDecimal visit(Predicate<Invoice> invoicePredicate, Function<InvoiceEntry, BigDecimal> invoiceEntryToValue) {
-    return getAll().stream()
-        .filter(invoicePredicate)
-        .flatMap(i -> i.getEntries().stream())
-        .map(invoiceEntryToValue)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
-  }
+//  default BigDecimal visit(Predicate<Invoice> invoicePredicate, Function<InvoiceEntry, BigDecimal> invoiceEntryToValue) {
+//    return getAll().stream()
+//        .filter(invoicePredicate)
+//        .flatMap(i -> i.getEntries().stream())
+//        .map(invoiceEntryToValue)
+//        .reduce(BigDecimal.ZERO, BigDecimal::add);
+//  }
 
   default void reset() {
-    getAll().forEach(invoice -> delete(invoice.getId()));
+    getAll().forEach(item -> delete(item.getId()));
   }
 
 }

@@ -5,51 +5,48 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
+import org.springframework.data.repository.CrudRepository;
 import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.model.Invoice;
+import pl.futurecollars.invoicing.model.WithId;
 
 @AllArgsConstructor
-public class JpaDatabase implements Database {
+public class JpaDatabase<T extends WithId> implements Database<T> {
 
-  private final InvoiceRepository invoiceRepository;
+  private final CrudRepository<T,Integer> repository;
 
   @Override
-  public int save(Invoice invoice) {
-    return invoiceRepository.save(invoice).getId();
+  public int save(T item) {
+    return repository.save(item).getId();
   }
 
   @Override
-  public Optional<Invoice> getById(int id) {
-    return invoiceRepository.findById(id);
+  public Optional<T> getById(int id) {
+    return repository.findById(id);
   }
 
   @Override
-  public List<Invoice> getAll() {
-    return StreamSupport.stream(invoiceRepository.findAll().spliterator(), false)
+  public List<T> getAll() {
+    return StreamSupport.stream(repository.findAll().spliterator(), false)
         .collect(Collectors.toList());
   }
 
   @Override
-  public Optional<Invoice> update(int id, Invoice updatedInvoice) {
-    Optional<Invoice> invoiceOptional = getById(id);
+  public Optional<T> update(int id, T updatedItem) {
+    Optional<T> itemOptional = getById(id);
 
-    if (!invoiceOptional.isPresent()) {
+    if (!itemOptional.isPresent()) {
       throw new IllegalArgumentException("Invoice with ID " + id + " does not exist and cannot be updated.");
     }
+    updatedItem.setId(id);
+    repository.save(updatedItem);
 
-    Invoice invoice = invoiceOptional.get();
-    updatedInvoice.setId(id); // just in case it was not set
-    updatedInvoice.getBuyer().setId(invoice.getBuyer().getId());
-    updatedInvoice.getSeller().setId(invoice.getSeller().getId());
-
-    invoiceRepository.save(updatedInvoice);
-
-    return invoiceOptional;
+    return itemOptional;
   }
 
   @Override
   public void delete(int id) {
-    Optional<Invoice> invoice = getById(id);
-    invoice.ifPresent(invoiceRepository::delete);
+    Optional<T> item = getById(id);
+    item.ifPresent(repository::delete);
   }
 }
