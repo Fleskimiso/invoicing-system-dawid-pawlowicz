@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Invoice {
+public class Invoice implements WithId {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,42 +9,43 @@ import lombok.AllArgsConstructor;
 import org.bson.Document;
 import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.model.Invoice;
+import pl.futurecollars.invoicing.model.WithId;
 
 @AllArgsConstructor
-public class MongoBasedDatabase implements Database {
+public class MongoBasedDatabase<T extends WithId> implements Database<T> {
 
-  private final MongoCollection<Invoice> collection;
+  private final MongoCollection<T> collection;
   private final MongoIdProvider idProvider;
 
   @Override
-  public int save(Invoice invoice) {
-    invoice.setId((int) idProvider.getNextIdAndIncrement());
-    collection.insertOne(invoice);
-    return invoice.getId();
+  public int save(T item) {
+    item.setId((int) idProvider.getNextIdAndIncrement());
+    collection.insertOne(item);
+    return item.getId();
   }
 
   @Override
-  public Optional<Invoice> getById(int id) {
+  public Optional<T> getById(int id) {
     return Optional.ofNullable(
         collection.find(new Document("_id", id)).first());
   }
 
   @Override
-  public List<Invoice> getAll() {
+  public List<T> getAll() {
     return StreamSupport
         .stream(collection.find().spliterator(), false)
         .collect(Collectors.toList());
   }
 
   @Override
-  public Optional<Invoice> update(int id, Invoice updatedInvoice) {
+  public Optional<T> update(int id, T updatedItem) {
     if (getById(id).isPresent()) {
-      updatedInvoice.setId(id);
+      updatedItem.setId(id);
       return Optional.ofNullable(
-          collection.findOneAndReplace(idFilter(id), updatedInvoice)
+          collection.findOneAndReplace(idFilter(id), updatedItem)
       );
     } else {
-      throw new IllegalArgumentException("Couldn't update invoice with id: " + id);
+      throw new IllegalArgumentException("Couldn't update item with id: " + id);
     }
 
   }
@@ -54,7 +55,7 @@ public class MongoBasedDatabase implements Database {
     if (getById(id).isPresent()) {
       collection.findOneAndDelete(idFilter(id));
     } else {
-      throw new RuntimeException("No invoice is present with id: " + id);
+      throw new RuntimeException("No item is present with id: " + id);
     }
   }
 

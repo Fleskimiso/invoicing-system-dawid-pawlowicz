@@ -1,0 +1,7 @@
+invoicing-system:
+  database:
+    type: file
+    location: db
+    invoices.filename: records.txt
+    company.filename: company.txt
+    id.filename: id.txt
