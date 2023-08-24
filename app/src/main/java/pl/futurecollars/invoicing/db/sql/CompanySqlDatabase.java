@@ -38,18 +38,12 @@ public class CompanySqlDatabase extends AbstractSqlDatabase implements Database<
   @Override
   @Transactional
   public Optional<Company> update(int id, Company updatedCompany) {
-    try {
-      Optional<Company> originalCompany = getById(id);
-      if (originalCompany.isEmpty()) {
-        throw new RuntimeException("Could not update company with id: " + id);
-      }
-
-      updateCompany(updatedCompany);
-
-      return originalCompany;
-    } catch (Exception exception) {
-      throw new RuntimeException("Could not update company with id: " + id, exception);
+    Optional<Company> originalCompany = getById(id);
+    if (originalCompany.isEmpty()) {
+      throw new IllegalArgumentException("Could not update company with id: " + id);
     }
+    updateCompany(updatedCompany);
+    return originalCompany;
   }
 
   @Override

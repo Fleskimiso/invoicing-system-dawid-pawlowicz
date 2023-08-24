@@ -11,7 +11,6 @@ import java.time.LocalDate
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static pl.futurecollars.invoicing.TestHelpers.clearIds
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 @SpringBootTest
@@ -27,7 +26,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
     private final static String ENDPOINT = "/invoices"
 
     def setup() {
-        getAllInvoices(ENDPOINT).each { invoice -> deleteInvoice(ENDPOINT, invoice.id) }
+        getAllInvoices(ENDPOINT).each { invoice -> deleteItem(ENDPOINT, invoice.id) }
     }
 
     def "empty array is returned when no invoices were added"() {
@@ -40,9 +39,9 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
         def invoiceAsJson = invoiceAsJson(1)
 
         expect:
-        def firstId = addInvoiceAndReturnId(ENDPOINT, invoiceAsJson)
-        addInvoiceAndReturnId(ENDPOINT, invoiceAsJson) == firstId + 1
-        addInvoiceAndReturnId(ENDPOINT, invoiceAsJson) == firstId + 2
+        def firstId = addItemAndReturnId(ENDPOINT, invoiceAsJson)
+        addItemAndReturnId(ENDPOINT, invoiceAsJson) == firstId + 1
+        addItemAndReturnId(ENDPOINT, invoiceAsJson) == firstId + 2
     }
 
     def "all invoices are returned when getting all invoices"() {
@@ -106,7 +105,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
 
     def "invoice can be modified"() {
         given:
-        def id = addInvoiceAndReturnId(ENDPOINT, invoiceAsJson(44))
+        def id = addItemAndReturnId(ENDPOINT, invoiceAsJson(44))
         def updatedInvoice = invoice(123)
         updatedInvoice.id = id
         updatedInvoice.date = LocalDate.now()
@@ -127,7 +126,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
         def invoices = addMultipleInvoices(ENDPOINT, 5)
 
         expect:
-        invoices.each { invoice -> deleteInvoice(ENDPOINT, invoice.getId()) }
+        invoices.each { invoice -> deleteItem(ENDPOINT, invoice.getId()) }
         getAllInvoices(ENDPOINT).size() == 0
     }
 }

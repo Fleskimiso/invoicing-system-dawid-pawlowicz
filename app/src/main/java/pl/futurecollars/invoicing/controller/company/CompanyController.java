@@ -18,13 +18,13 @@ public class CompanyController implements CompanyApi {
   private final CompanyService companyService;
 
   @Override
-  public List<Company> getAll() {
-    return companyService.getAll();
+  public ResponseEntity<List<Company>> getAll() {
+    return ResponseEntity.ok(companyService.getAll());
   }
 
   @Override
-  public int add(@RequestBody Company company) {
-    return companyService.save(company);
+  public ResponseEntity<Integer> add(@RequestBody Company company) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(companyService.save(company));
   }
 
   @Override

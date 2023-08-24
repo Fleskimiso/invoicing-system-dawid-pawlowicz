@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.WithId;
 
 public class InMemoryDatabase<T extends WithId> implements Database<T> {
@@ -45,6 +44,10 @@ public class InMemoryDatabase<T extends WithId> implements Database<T> {
 
   @Override
   public void delete(int id) {
-    records.remove(id);
+    if (getById(id).isPresent()) {
+      records.remove(id);
+    } else {
+      throw new RuntimeException("failed to delete item with id: " + id);
+    }
   }
 }

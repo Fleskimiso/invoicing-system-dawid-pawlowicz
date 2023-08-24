@@ -16,15 +16,18 @@ import pl.futurecollars.invoicing.model.Invoice;
 public class InMemoryDatabaseConfiguration {
 
   @Bean
+  @Qualifier("invoice")
+  @Primary
   public Database<Invoice> invoiceInMemoryDatabase() {
     log.info("Creating in memory invoice database");
-    return new InMemoryDatabase<>();
+    return new InMemoryDatabase<Invoice>();
   }
 
   @Bean
+  @Qualifier("company")
   public Database<Company> companyInMemoryDatabase() {
     log.info("Creating in memory company database");
-    return new InMemoryDatabase<>();
+    return new InMemoryDatabase<Company>();
   }
 
 }

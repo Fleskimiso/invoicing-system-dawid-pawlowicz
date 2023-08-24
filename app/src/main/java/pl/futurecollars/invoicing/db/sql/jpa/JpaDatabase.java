@@ -7,13 +7,12 @@ import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
 import org.springframework.data.repository.CrudRepository;
 import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.WithId;
 
 @AllArgsConstructor
 public class JpaDatabase<T extends WithId> implements Database<T> {
 
-  private final CrudRepository<T,Integer> repository;
+  private final CrudRepository<T, Integer> repository;
 
   @Override
   public int save(T item) {
@@ -47,6 +46,9 @@ public class JpaDatabase<T extends WithId> implements Database<T> {
   @Override
   public void delete(int id) {
     Optional<T> item = getById(id);
+    if (item.isEmpty()) {
+      throw new RuntimeException("Could not delete item with id: " + id);
+    }
     item.ifPresent(repository::delete);
   }
 }

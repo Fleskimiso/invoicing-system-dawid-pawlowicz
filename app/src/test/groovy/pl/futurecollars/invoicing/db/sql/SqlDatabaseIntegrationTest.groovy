@@ -25,7 +25,7 @@ class SqlDatabaseIntegrationTest extends AbstractDatabaseTest {
         println flyway.info()
 
 
-        def database = new SqlDatabase(jdbcTemplate)
+        def database = new InvoiceSqlDatabase(jdbcTemplate)
         return database
     }
 
