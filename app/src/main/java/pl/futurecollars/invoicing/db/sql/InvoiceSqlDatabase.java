@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
-import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +13,6 @@ import pl.futurecollars.invoicing.model.Company;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.InvoiceEntry;
 import pl.futurecollars.invoicing.model.Vat;
-
 
 class InvoiceSqlDatabase extends AbstractSqlDatabase implements Database<Invoice> {
 
@@ -29,7 +27,7 @@ class InvoiceSqlDatabase extends AbstractSqlDatabase implements Database<Invoice
     GeneratedKeyHolder sellerKeyHolder = new GeneratedKeyHolder();
     GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
-    //should check if company existed before
+    // should check if company existed before
     long buyerId = insertCompany(invoice.getBuyer());
     long sellerId = insertCompany(invoice.getSeller());
 
@@ -93,10 +91,13 @@ class InvoiceSqlDatabase extends AbstractSqlDatabase implements Database<Invoice
     }
   }
 
-
   @Override
   public void delete(int id) {
-    Invoice invoiceOptional = invoiceRowMapper(id).get(0);
+    List<Invoice> invoices = invoiceRowMapper(id);
+    if (invoices.isEmpty()) {
+      throw new RuntimeException("Could not delete invoice with id: " + id);
+    }
+    Invoice invoice = invoices.get(0);
     deleteEntriesAndCarsRelatedToInvoice(id);
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
@@ -107,8 +108,8 @@ class InvoiceSqlDatabase extends AbstractSqlDatabase implements Database<Invoice
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
           "delete from company where id in (?, ?);");
-      ps.setInt(1, invoiceOptional.getBuyer().getId());
-      ps.setInt(2, invoiceOptional.getSeller().getId());
+      ps.setInt(1, invoice.getBuyer().getId());
+      ps.setInt(2, invoice.getSeller().getId());
       return ps;
     });
   }

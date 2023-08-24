@@ -3,5 +3,5 @@ invoicing-system:
     type: mongo
     name: invoicing
     invoices.collection: invoices
-    company.collection: companies
+    companies.collection: companies
     counter.collection: counters

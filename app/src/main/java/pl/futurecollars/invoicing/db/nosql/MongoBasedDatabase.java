@@ -8,7 +8,6 @@ import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
 import org.bson.Document;
 import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.WithId;
 
 @AllArgsConstructor

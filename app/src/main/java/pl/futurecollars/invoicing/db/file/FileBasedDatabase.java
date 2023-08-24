@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.WithId;
 import pl.futurecollars.invoicing.service.IdService;
 import pl.futurecollars.invoicing.utils.FileService;
@@ -99,7 +98,7 @@ public class FileBasedDatabase<T extends WithId> implements Database<T> {
       }
 
     } catch (IOException ex) {
-      throw new RuntimeException("Failed to delete invoice with id: " + id, ex);
+      throw new RuntimeException("Failed to delete item with id: " + id, ex);
     }
   }
 

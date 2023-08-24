@@ -19,11 +19,11 @@ public interface CompanyApi {
 
   @ApiOperation(value = "Get list of all companies")
   @GetMapping
-  List<Company> getAll();
+  ResponseEntity<List<Company>> getAll();
 
   @ApiOperation(value = "Add new company to system")
   @PostMapping
-  int add(@RequestBody Company company);
+  ResponseEntity<Integer> add(@RequestBody Company company);
 
   @ApiOperation(value = "Get company by id")
   @GetMapping(value = "/{id}")
