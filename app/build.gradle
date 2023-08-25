@@ -54,6 +54,7 @@ dependencies {
 
     //Spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     //SpringFox
@@ -91,6 +92,22 @@ checkstyle {
     maxWarnings = 0
     maxErrors = 0
 }
+
+task testWithFileDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'file'
+}
+
+task testWithMemoryDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'memory'
+}
+
+task testWithSQLDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'sql'
+}
+
+check.dependsOn testWithFileDatabase
+check.dependsOn testWithFileDatabase
+//checkdependsOn testWithSqlDatabase
 
 test {
     finalizedBy jacocoTestReport
