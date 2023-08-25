@@ -9,6 +9,8 @@ invoicing-system:
     id.filename: id.txt
 logging:
   level:
+    org:
+      flywaydb: DEBUG
     pl:
       futurecollars:
         invoicing:
@@ -19,3 +21,5 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+    flyway:
+      enabled: false

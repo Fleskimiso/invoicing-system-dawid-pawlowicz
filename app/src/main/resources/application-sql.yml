@@ -10,3 +10,4 @@ spring:
 invoicing-system:
   database:
     type: sql
+
