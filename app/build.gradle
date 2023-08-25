@@ -30,6 +30,7 @@ plugins {
     id 'jacoco'
     id 'org.springframework.boot' version '2.7.12'
     id 'io.spring.dependency-management' version '1.1.0'
+
 }
 
 repositories {
@@ -48,6 +49,9 @@ dependencies {
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
 
+    //
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+
     //Spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.springframework.boot:spring-boot-starter-jdbc"
@@ -63,7 +67,6 @@ dependencies {
     implementation("org.flywaydb:flyway-core:${flywayVersion}")
 
     runtimeOnly("com.h2database:h2:${h2DatabaseVersion}")
-
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

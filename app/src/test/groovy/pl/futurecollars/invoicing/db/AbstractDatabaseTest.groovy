@@ -4,6 +4,7 @@ package pl.futurecollars.invoicing.db
 import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Specification
 
+import static pl.futurecollars.invoicing.TestHelpers.clearIds
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
 abstract class AbstractDatabaseTest extends Specification {
@@ -25,6 +26,8 @@ abstract class AbstractDatabaseTest extends Specification {
         for (i in 0..<invoicesId.size()) {
             assert database.getById(invoicesId.get(i) as int).isPresent()
         }
+        cleanup:
+        clearIds()
     }
 
     def "should be able to retrieve all records from database"() {
@@ -44,7 +47,7 @@ abstract class AbstractDatabaseTest extends Specification {
 
     def "should throw exception on updating non existing record"() {
         when:
-        database.update(1, invoices.get(0))
+        database.update(31, invoices.get(0))
 
         then:
         thrown(IllegalArgumentException)
@@ -53,12 +56,14 @@ abstract class AbstractDatabaseTest extends Specification {
     def "should update invoice correctly"() {
         when:
         int id = database.save(invoices.get(0))
-
+        def updatedInvoice = database.getById(id).get()
+        updatedInvoice.setNumber("test number")
+        updatedInvoice.entries.forEach {it.setId(it.getId()+1)}
         then:
-        database.update(id, invoices.get(1))
+        database.update(id, updatedInvoice)
 
         expect:
-        database.getById(id).get() == invoices.get(1)
+        database.getById(id).get() == updatedInvoice
     }
 
     def "should remove a record from database correctly"() {

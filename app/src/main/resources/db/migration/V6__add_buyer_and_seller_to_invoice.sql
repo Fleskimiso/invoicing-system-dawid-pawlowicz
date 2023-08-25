@@ -5,6 +5,9 @@ ALTER TABLE public.invoice
     ADD COLUMN seller bigint NOT NULL;
 
 ALTER TABLE public.invoice
+    ADD COLUMN number character varying(50) NOT NULL;
+
+ALTER TABLE public.invoice
     ADD CONSTRAINT buyer_fk FOREIGN KEY (buyer)
         REFERENCES public.company (id);
 
