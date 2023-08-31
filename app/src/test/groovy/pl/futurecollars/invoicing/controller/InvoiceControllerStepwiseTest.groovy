@@ -77,10 +77,10 @@ class InvoiceControllerStepwiseTest extends Specification {
 
         given:
         def originalInvoice = invoice
-        originalInvoice.id = invoiceId
+        originalInvoice.id = 1
 
         when:
-        def response = mockMvc.perform(get("$ENDPOINT/$invoiceId"))
+        def response = mockMvc.perform(get("$ENDPOINT/1"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
