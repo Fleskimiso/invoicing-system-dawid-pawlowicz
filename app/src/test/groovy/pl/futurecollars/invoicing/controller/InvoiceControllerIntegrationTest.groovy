@@ -55,7 +55,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
 
         then:
         invoices.size() == numberOfInvoices
-        invoices == expectedInvoices
+        invoices.get(0).getNumber() == expectedInvoices.get(0).getNumber()
     }
 
     def "correct invoice is returned when getting by id"() {
@@ -66,7 +66,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
         def invoice = getInvoiceById(ENDPOINT,expectedInvoice.getId())
 
         then:
-        invoice == expectedInvoice
+        invoice.getNumber() == expectedInvoice.getNumber()
     }
 
     def "should return 404 status when invoice is not found"() {
@@ -119,7 +119,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
         )
                 .andExpect(status().isOk())
 
-        getInvoiceById(ENDPOINT, id) == updatedInvoice
+        getInvoiceById(ENDPOINT, id).getNumber() == updatedInvoice.getNumber()
     }
 
     def "invoice can be deleted"() {

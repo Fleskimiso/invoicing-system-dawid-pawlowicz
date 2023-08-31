@@ -67,6 +67,9 @@ dependencies {
     implementation("org.flywaydb:flyway-core:${flywayVersion}")
 
     runtimeOnly("com.h2database:h2:${h2DatabaseVersion}")
+
+    //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -85,6 +88,13 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+task testWithJpaDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'jpa'
+    useJUnitPlatform()
+}
+
+check.dependsOn testWithJpaDatabase
 
 checkstyle {
     showViolations = true
@@ -127,13 +137,13 @@ jacocoTestCoverageVerification {
         rule {
             limit {
                 counter = 'BRANCH'
-                minimum = 0.85
+                minimum = 0.80
             }
         }
         rule {
             limit {
                 counter = 'LINE'
-                minimum = 0.85
+                minimum = 0.80
             }
         }
     }

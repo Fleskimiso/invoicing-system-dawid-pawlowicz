@@ -50,6 +50,15 @@ class TestHelpers {
                 .build()
     }
 
+    static carInvoice(){
+        Invoice.builder()
+                .seller(company(4))
+                .buyer(company(8))
+                .entries(List.of(product(1)))
+                .date(LocalDate.now())
+                .build()
+
+    }
     static car() {
          Car.builder()
          .id(getCarId())
@@ -58,28 +67,9 @@ class TestHelpers {
             .build()
     }
 
-    static invoiceEntry(){
-        InvoiceEntry.builder()
-                .vatValue(BigDecimal.valueOf(53.29))
-                .price(BigDecimal.valueOf(76.98))
-                .depreciationCosts(car())
-                .build()
-    }
-
-    static carInvoice(){
-        Invoice.builder()
-                .seller(company(4))
-                .buyer(company(8))
-                .entries(List.of(invoiceEntry()))
-                .date(LocalDate.now())
-                .build()
-
-    }
-
     static clearIds() {
         setCarId(0)
         setCompanyId(1)
         setEntryId(1)
     }
-
 }
