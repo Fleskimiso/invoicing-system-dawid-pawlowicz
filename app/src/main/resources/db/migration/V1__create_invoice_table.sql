@@ -5,4 +5,3 @@ CREATE TABLE public.invoice
 );
 ALTER TABLE invoice
 RENAME COLUMN issue_date TO date
-

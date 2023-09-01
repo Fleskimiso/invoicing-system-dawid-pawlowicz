@@ -9,6 +9,7 @@ import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.utils.JsonService
 import spock.lang.Specification
 import spock.lang.Stepwise
+import spock.lang.Unroll
 
 import java.time.LocalDate
 
@@ -77,10 +78,10 @@ class InvoiceControllerStepwiseTest extends Specification {
 
         given:
         def originalInvoice = invoice
-        originalInvoice.id = 1
+        originalInvoice.id = invoiceId
 
         when:
-        def response = mockMvc.perform(get("$ENDPOINT/1"))
+        def response = mockMvc.perform(get("$ENDPOINT/$invoiceId"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
