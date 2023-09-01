@@ -39,6 +39,10 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['Chrome'],
     singleRun: false,
+    files: [
+          './node_modules/bootstrap/dist/css/bootstrap.min.css',
+          { pattern: 'node_modules/font-awesome/css/font-awesome.css', included: true, watched: true },
+        ],
     restartOnFileChange: true
   });
 };
