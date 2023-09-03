@@ -1,33 +1,33 @@
-<table class="table table-striped" id="companiesTable">
+<table class="table table-striped m-3" id="companiesTable">
 
   <tr>
-    <th>Tax identification number</th>
-    <th>Address</th>
-    <th>Name</th>
-    <th>Pension insurance</th>
-    <th>Health insurance</th>
+    <th class="mb-3 text-center">Tax identification number</th>
+    <th class="mb-3 text-center">Address</th>
+    <th class="mb-3 text-center">Name</th>
+    <th class="mb-3 text-center">Pension insurance</th>
+    <th class="mb-3 text-center">Health insurance</th>
   </tr>
 
-  <tr *ngFor="let company of companies">
+  <tr class="my-3" *ngFor="let company of companies">
     <td *ngIf="!company.editMode">{{company.taxIdentificationNumber}}</td>
     <td *ngIf="company.editMode">
-      <input [(ngModel)]="company.editedCompany.taxIdentificationNumber" type="text" class="form-control" name="taxIdentificationNumber">
+      <input [(ngModel)]="company.editedCompany!.taxIdentificationNumber" type="text" class="form-control" name="taxIdentificationNumber">
     </td>
     <td *ngIf="!company.editMode">{{company.address}}</td>
     <td *ngIf="company.editMode">
-      <input [(ngModel)]="company.editedCompany.address" type="text" class="form-control" name="address">
+      <input [(ngModel)]="company.editedCompany!.address" type="text" class="form-control" name="address">
     </td>
     <td *ngIf="!company.editMode">{{company.name}}</td>
     <td *ngIf="company.editMode">
-      <input [(ngModel)]="company.editedCompany.name" type="text" class="form-control" name="name">
+      <input [(ngModel)]="company.editedCompany!.name" type="text" class="form-control" name="name">
     </td>
     <td *ngIf="!company.editMode">{{company.pensionInsurance}}</td>
     <td *ngIf="company.editMode">
-      <input [(ngModel)]="company.editedCompany.pensionInsurance" type="text" class="form-control" name="pensionInsurance">
+      <input [(ngModel)]="company.editedCompany!.pensionInsurance" type="text" class="form-control" name="pensionInsurance">
     </td>
     <td *ngIf="!company.editMode">{{company.healthInsurance}}</td>
     <td *ngIf="company.editMode">
-      <input [(ngModel)]="company.editedCompany.healthInsurance" type="text" class="form-control" name="healthInsurance">
+      <input [(ngModel)]="company.editedCompany!.healthInsurance" type="text" class="form-control" name="healthInsurance">
     </td>
     <td>
       <button *ngIf="!company.editMode" (click)="deleteCompany(company)" class="btn btn-danger">Delete</button>
