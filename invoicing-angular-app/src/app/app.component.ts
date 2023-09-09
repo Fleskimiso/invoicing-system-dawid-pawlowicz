@@ -8,7 +8,7 @@ import { CompanyService } from './CompanyService';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'invoicing-app';
+  title = 'invoicing-angular-app';
 
   companies: Company[] = []
 
