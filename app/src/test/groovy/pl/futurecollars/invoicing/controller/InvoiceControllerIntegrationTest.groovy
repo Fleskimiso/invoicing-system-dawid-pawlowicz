@@ -96,7 +96,7 @@ class InvoiceControllerIntegrationTest extends ControllerTestHelper {
 
         expect:
         mockMvc.perform(
-                put("$ENDPOINT/495")
+                put("$ENDPOINT/4985")
                         .content(invoiceAsJson(1))
                         .contentType(MediaType.APPLICATION_JSON)
         )
