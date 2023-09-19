@@ -65,7 +65,7 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
     def "Tax when we used car"() {
         given:
         def inv = carInvoice()
-        addInvoiceAndReturnId(INVOICE_ENDPOINT,jsonService.toJson(inv))
+        addItemAndReturnId(INVOICE_ENDPOINT,jsonService.toJson(inv))
 
         when:
         def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT,inv.getSeller())

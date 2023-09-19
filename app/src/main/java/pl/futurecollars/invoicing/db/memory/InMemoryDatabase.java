@@ -5,45 +5,49 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.model.Invoice;
+import pl.futurecollars.invoicing.model.WithId;
 
-public class InMemoryDatabase implements Database {
+public class InMemoryDatabase<T extends WithId> implements Database<T> {
 
-  private final HashMap<Integer, Invoice> records = new HashMap<>();
+  private final HashMap<Integer, T> records = new HashMap<>();
   private int currentId = 1;
 
   @Override
-  public int save(Invoice invoice) {
-    invoice.setId(currentId);
-    records.put(currentId, invoice);
+  public int save(T item) {
+    item.setId(currentId);
+    records.put(currentId, item);
     return currentId++;
   }
 
   @Override
-  public Optional<Invoice> getById(int id) {
+  public Optional<T> getById(int id) {
     return Optional.ofNullable(records.get(id));
   }
 
   @Override
-  public List<Invoice> getAll() {
+  public List<T> getAll() {
     return new ArrayList<>(records.values());
   }
 
   @Override
-  public Optional<Invoice> update(int id, Invoice updatedInvoice) {
+  public Optional<T> update(int id, T updatedItem) {
     if (!records.containsKey(id)) {
       throw new IllegalArgumentException("No element exists with such id: " + id);
     }
 
-    updatedInvoice.setId(id);
-    records.put(id, updatedInvoice);
+    updatedItem.setId(id);
+    records.put(id, updatedItem);
 
-    return Optional.of(updatedInvoice);
+    return Optional.of(updatedItem);
 
   }
 
   @Override
   public void delete(int id) {
-    records.remove(id);
+    if (getById(id).isPresent()) {
+      records.remove(id);
+    } else {
+      throw new RuntimeException("failed to delete item with id: " + id);
+    }
   }
 }
