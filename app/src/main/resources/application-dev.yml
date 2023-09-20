@@ -4,3 +4,8 @@ server:
 invoicing-system:
   database:
     type: memory
+spring:
+  security:
+    user:
+      name: user
+      password: password123

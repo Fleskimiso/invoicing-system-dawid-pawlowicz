@@ -2,6 +2,9 @@ server:
   port: 7777
 
 invoicing-system:
+  allowedOrigins: http://localhost:4200
+  csrf:
+    enabled: true
   database:
     type: memory
 logging:
