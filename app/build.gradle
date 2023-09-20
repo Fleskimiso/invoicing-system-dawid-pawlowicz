@@ -50,8 +50,9 @@ dependencies {
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
 
-    //
-    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+    //spring security
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.security:spring-security-test"
 
     //Spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
