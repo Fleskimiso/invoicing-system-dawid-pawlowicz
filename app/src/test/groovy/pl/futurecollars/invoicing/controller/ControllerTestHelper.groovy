@@ -2,6 +2,7 @@ package pl.futurecollars.invoicing.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import pl.futurecollars.invoicing.model.Company
@@ -10,10 +11,12 @@ import pl.futurecollars.invoicing.utils.JsonService
 import spock.lang.Specification
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 import static pl.futurecollars.invoicing.TestHelpers.company
 
+@WithMockUser
 class ControllerTestHelper extends Specification {
 
     @Autowired
@@ -23,7 +26,7 @@ class ControllerTestHelper extends Specification {
     private JsonService jsonService
 
     protected ResultActions deleteItem(String endpoint, int id) {
-        mockMvc.perform(delete("$endpoint/$id"))
+        mockMvc.perform(delete("$endpoint/$id").with(csrf()))
     }
 
     protected List<Invoice> getAllInvoices(String endpoint) {
@@ -48,6 +51,7 @@ class ControllerTestHelper extends Specification {
                         post(endpoint)
                                 .content(itemAsJson)
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                         .andExpect(status().isCreated())
                         .andReturn()
@@ -81,7 +85,7 @@ class ControllerTestHelper extends Specification {
     }
 
     private <T> T getAll(Class<T> clazz, String endpoint) {
-        def response = mockMvc.perform(get(endpoint))
+        def response = mockMvc.perform(get(endpoint).with(csrf()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
@@ -91,7 +95,7 @@ class ControllerTestHelper extends Specification {
     }
 
     private <T> T getById(long id, Class<T> clazz, String endpoint) {
-        def invoiceAsString = mockMvc.perform(get("$endpoint/$id"))
+        def invoiceAsString = mockMvc.perform(get("$endpoint/$id").with(csrf()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
@@ -105,6 +109,7 @@ class ControllerTestHelper extends Specification {
                 post(endpoint)
                         .content(jsonService.toJson(company))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         )
                 .andExpect(status().isOk())
                 .andReturn()

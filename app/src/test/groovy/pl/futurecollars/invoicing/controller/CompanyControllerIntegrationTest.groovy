@@ -4,16 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoicing.utils.JsonService
 
-import java.time.LocalDate
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static pl.futurecollars.invoicing.TestHelpers.company
-import static pl.futurecollars.invoicing.TestHelpers.invoice
 
+@WithMockUser
 @SpringBootTest
 @AutoConfigureMockMvc
 class CompanyControllerIntegrationTest extends ControllerTestHelper {
@@ -76,6 +77,7 @@ class CompanyControllerIntegrationTest extends ControllerTestHelper {
         expect:
         mockMvc.perform(
                 get("$ENDPOINT/123")
+                .with(csrf())
         )
                 .andExpect(status().isNotFound())
     }
@@ -87,6 +89,7 @@ class CompanyControllerIntegrationTest extends ControllerTestHelper {
         expect:
         mockMvc.perform(
                 delete("$ENDPOINT/3489")
+                .with(csrf())
         )
                 .andExpect(status().isNotFound())
     }
@@ -100,6 +103,7 @@ class CompanyControllerIntegrationTest extends ControllerTestHelper {
                 put("$ENDPOINT/495")
                         .content(invoiceAsJson(1))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with (csrf())
         )
                 .andExpect(status().is4xxClientError())
     }
@@ -116,6 +120,7 @@ class CompanyControllerIntegrationTest extends ControllerTestHelper {
                 put("$ENDPOINT/$id")
                         .content(jsonService.toJson(updatedCompany))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         )
                 .andExpect(status().isOk())
 

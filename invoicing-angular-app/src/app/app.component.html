@@ -1,6 +1,6 @@
 
 <div id='HeaIdHeder' class="content">
-  <span>invoicing-angular-app app is running!</span>
+  <div class="main-title">Manage companies</div>
 </div>
 <div class="content-container">
 <table class="table table-striped table-bordered table-hover" id="companiesTable">
@@ -16,7 +16,8 @@
 
   <tr class="companyRow" *ngFor="let company of companies">
     <td *ngIf="!company.editMode" id="taxId">{{company.taxIdentificationNumber}}</td>
-    <input
+    <td *ngIf="company.editMode" >
+      <input
       [ngModel]="company.editedCompany?.taxIdentificationNumber"
       (ngModelChange)="company.editedCompany && (company.editedCompany.taxIdentificationNumber = $event)"
       type="text"
@@ -24,6 +25,7 @@
       name="taxIdentificationNumber"
       title="Enter the tax identification number (e.g. 123-456-78-90)"
     />
+    </td>
 
     <td *ngIf="!company.editMode"  id="address">{{company.address}}</td>
     <td *ngIf="company.editMode" >

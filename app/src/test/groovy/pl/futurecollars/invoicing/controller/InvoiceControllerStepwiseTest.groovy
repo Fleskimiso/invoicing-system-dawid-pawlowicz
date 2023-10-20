@@ -4,20 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.utils.JsonService
 import spock.lang.Specification
 import spock.lang.Stepwise
-import spock.lang.Unroll
 
 import java.time.LocalDate
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static pl.futurecollars.invoicing.TestHelpers.clearIds
 import static pl.futurecollars.invoicing.TestHelpers.invoice
 
+@WithMockUser
 @SpringBootTest
 @AutoConfigureMockMvc
 @Stepwise
@@ -43,7 +45,7 @@ class InvoiceControllerStepwiseTest extends Specification {
     def "empty array is returned when no invoices are added"() {
 
         when:
-        def response = mockMvc.perform(get(ENDPOINT))
+        def response = mockMvc.perform(get(ENDPOINT).with(csrf()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
@@ -62,6 +64,7 @@ class InvoiceControllerStepwiseTest extends Specification {
         def response = mockMvc.perform(post(ENDPOINT)
                 .content(invoiceJson)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf())
         )
                 .andExpect(status().is2xxSuccessful())
                 .andReturn()
@@ -81,7 +84,8 @@ class InvoiceControllerStepwiseTest extends Specification {
         originalInvoice.id = invoiceId
 
         when:
-        def response = mockMvc.perform(get("$ENDPOINT/$invoiceId"))
+        def response = mockMvc.perform(get("$ENDPOINT/$invoiceId")
+        .with(csrf()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
@@ -107,6 +111,7 @@ class InvoiceControllerStepwiseTest extends Specification {
                 put("$ENDPOINT/$invoiceId")
                         .content(invoiceJson)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         ).andExpect(status().isOk())
                 .andReturn()
                 .response
@@ -118,11 +123,11 @@ class InvoiceControllerStepwiseTest extends Specification {
 
     def "should delete invoice"() {
         when:
-        mockMvc.perform(delete("$ENDPOINT/$invoiceId"))
+        mockMvc.perform(delete("$ENDPOINT/$invoiceId").with(csrf()))
                 .andExpect(status().isNoContent())
 
         then:
-        def response = mockMvc.perform(get(ENDPOINT))
+        def response = mockMvc.perform(get(ENDPOINT).with(csrf()))
                 .andReturn()
                 .response
                 .getContentAsString()
