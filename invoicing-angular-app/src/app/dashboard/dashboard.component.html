@@ -1,0 +1,17 @@
+<!-- dashboard.component.html -->
+<div class="dashboard-container">
+    <header>
+      <h1>Invoicing App</h1>
+      <nav>
+        <ul>
+          <li><a routerLink="/companies" routerLinkActive="active">Manage Companies</a></li>
+          <li><a routerLink="/invoices" routerLinkActive="active">Invoices</a></li>
+          <li><a routerLink="/taxation" routerLinkActive="active">Taxation</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+  

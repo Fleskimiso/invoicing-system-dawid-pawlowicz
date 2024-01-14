@@ -35,7 +35,7 @@ public class SpringFoxConfiguration {
         .license("MIT license")
         .title("Invoice Manager")
         .contact(
-            new Contact("Dawid i Kamil", "https://github.com/Fleskimiso/invoicing-system-dawid-pawlowicz", "")
+            new Contact("Dawid", "https://github.com/Fleskimiso/invoicing-system-dawid-pawlowicz", "")
         )
         .version("1.0.1")
         .build();

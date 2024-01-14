@@ -3,11 +3,11 @@ import { Company } from './company';
 import { CompanyService } from './CompanyService';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-companies',
+  templateUrl: './app.companies.html',
+  styleUrls: ['./app.companies.css']
 })
-export class AppComponent implements OnInit {
+export class CompanyComponent implements OnInit {
   title = 'invoicing-angular-app';
 
   companies: Company[] = []
