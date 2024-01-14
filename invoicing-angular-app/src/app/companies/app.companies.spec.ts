@@ -1,14 +1,14 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import { CompanyComponent } from './app.companies';
 import { CompanyService } from './CompanyService';
 import { Company } from './company';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
 describe('AppComponent', () => {
-  let fixture: ComponentFixture<AppComponent>;
-  let component: AppComponent;
+  let fixture: ComponentFixture<CompanyComponent>;
+  let component: CompanyComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -16,14 +16,14 @@ describe('AppComponent', () => {
         { provide: CompanyService, useClass: MockCompanyService }
       ],
       declarations: [
-        AppComponent
+        CompanyComponent
       ],
       imports: [
         FormsModule
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AppComponent);
+    fixture = TestBed.createComponent(CompanyComponent);
     component = fixture.componentInstance;
 
     component.ngOnInit()
@@ -31,7 +31,7 @@ describe('AppComponent', () => {
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(CompanyComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
@@ -68,13 +68,13 @@ describe('AppComponent', () => {
   });
 
   it(`should have as title 'invoicing-angular-app'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(CompanyComponent);
     const app = fixture.componentInstance;
     expect(app.title).toEqual('invoicing-angular-app');
   });
 
   it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(CompanyComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('.content span').textContent).toContain('invoicing-angular-app app is running!');
