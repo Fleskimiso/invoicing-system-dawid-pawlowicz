@@ -1,0 +1,129 @@
+<!-- invoice.component.html -->
+
+<div id='Invoice' class="content">
+  <div class="main-title">Manage Invoices</div>
+</div>
+
+<div class="content-container">
+  <form>
+    <!-- Invoice details row -->
+    <div class="invoice-details-row">
+      <div class="form-group row">
+        <label for="number">Invoice Number</label>
+        <input [(ngModel)]="newInvoice.number" type="text" class="form-control" name="number" id="number" required>
+      </div>
+
+      <div class="form-group row">
+        <label for="buyer">Buyer</label>
+        <select [(ngModel)]="newInvoice.buyer" class="form-control" name="buyer" id="buyer" required>
+          <option *ngFor="let company of companies" [ngValue]="company">{{ company.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group row">
+        <label for="seller">Seller</label>
+        <select [(ngModel)]="newInvoice.seller" class="form-control" name="seller" id="seller" required>
+          <option *ngFor="let company of companies" [ngValue]="company">{{ company.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group row">
+        <label for="date">Invoice Date</label>
+        <input [(ngModel)]="newInvoice.date" type="date" class="form-control" name="date" id="date" required>
+      </div>
+    </div>
+
+    <!-- Invoice entries -->
+    <div *ngFor="let entry of newInvoice.entries; let i = index" class="invoice-entry">
+      <div class="form-group">
+        <label for="entryDescription{{i}}">Entry Description</label>
+        <input [(ngModel)]="entry.description" type="text" class="form-control" name="entryDescription{{i}}" id="entryDescription{{i}}" placeholder="Enter entry description" required>
+      </div>
+
+      <div class="form-group">
+        <label for="quantity{{i}}">Quantity</label>
+        <input [(ngModel)]="entry.quantity" (change)="onValueChange('quantity', entry)" type="number" class="form-control" name="quantity{{i}}" id="quantity{{i}}" placeholder="Enter quantity" required>
+      </div>
+
+      <div class="form-group">
+        <label for="price{{i}}">Price</label>
+        <input [(ngModel)]="entry.price" (change)="onValueChange('price', entry)" type="number" class="form-control" name="price{{i}}" id="price{{i}}" placeholder="Enter price" required>
+      </div>
+
+      <div class="form-group">
+        <label for="vatRate{{i}}">VAT Rate (%)</label>
+        <select [(ngModel)]="entry.vatRate" (change)="onValueChange('vatRate', entry)" class="form-control" name="vatRate{{i}}" id="vatRate{{i}}" required>
+          <option *ngFor="let vatRate of vatRates" [ngValue]="vatRate">{{ vatRate }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>VAT Value</label>
+        <td>
+          {{  entry.vatValue | currency }}
+        </td>
+      </div>
+
+      <div *ngIf="!entry.depreciationCosts" class="form-group">
+        <button (click)="addCarForEntry(i)" class="btn btn-info" title="Add Car">
+          <i class="fas fa-car"></i> Add Car
+        </button>
+      </div>
+
+      <div *ngIf="entry.depreciationCosts" class="form-group">
+        <label for="carRegistrationNum{{i}}">Car Registration Number</label>
+        <input [(ngModel)]="entry.depreciationCosts.registrationNum" type="text" class="form-control" name="carRegistrationNum{{i}}" id="carRegistrationNum{{i}}" placeholder="Enter car registration number">
+      </div>
+    
+      <div *ngIf="entry.depreciationCosts" class="form-group">
+        <label for="ifPrivateUse{{i}}">Private Use</label>
+        <input [(ngModel)]="entry.depreciationCosts.ifPrivateUse" type="checkbox" class="form-check-input" name="ifPrivateUse{{i}}" id="ifPrivateUse{{i}}">
+      </div>
+
+      <div class="form-group">
+        <button (click)="deleteEntry(i)" class="btn btn-danger" title="Delete entry">
+          <i class="fas fa-trash"></i> Delete Entry
+        </button>
+      </div>
+    </div>
+
+   <div class="invoice-details-row">
+     <!-- Add entry button -->
+     <div class="form-group">
+      <button (click)="addEntry()" class="btn btn-success" title="Add entry">
+        <i class="fas fa-plus"></i> Add Entry
+      </button>
+    </div>
+
+    <!-- Add invoice button -->
+    <div class="form-group">
+      <button (click)="addInvoice()" type="button" class="btn btn-primary" title="Add a new invoice">
+        <i class="fas fa-clipboard-check"></i> Add Invoice
+      </button>
+    </div>
+   </div>
+  </form>
+
+  <!-- Existing invoices -->
+  <table class="table table-striped table-bordered table-hover" id="invoicesTable">
+    <tr>
+      <th class="mb-3 text-center">Invoice Number</th>
+      <th class="mb-3 text-center">Buyer Name</th>
+      <th class="mb-3 text-center">Seller Name</th>
+      <th class="mb-3 text-center">Invoice Date</th>
+      <th class="mb-3 text-center">Actions</th>
+    </tr>
+
+    <tr *ngFor="let invoice of invoices">
+      <td>{{ invoice.number }}</td>
+      <td>{{ invoice.buyer.name }}</td>
+      <td>{{ invoice.seller.name }}</td>
+      <td>{{ invoice.date | date }}</td>
+      <td>
+        <button (click)="deleteInvoice(invoice)" class="btn btn-danger btn-margin" title="Delete invoice">
+          <i class="fas fa-trash"></i> Delete Invoice
+        </button>
+      </td>
+    </tr>
+  </table>
+</div>

@@ -7,14 +7,14 @@ import { AppRoutingModule } from './app-routing.module';
 
 
 import { CompanyComponent } from './companies/app.companies';
-import { InvoicesComponent } from './invoices/invoices.component';
+import { InvoiceComponent } from './invoices/invoice.component';
 import { TaxationComponent } from './taxation/taxation.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
     CompanyComponent,
-    InvoicesComponent,
+    InvoiceComponent,
     TaxationComponent,
     DashboardComponent
   ],
