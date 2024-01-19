@@ -104,26 +104,88 @@
    </div>
   </form>
 
-  <!-- Existing invoices -->
-  <table class="table table-striped table-bordered table-hover" id="invoicesTable">
-    <tr>
-      <th class="mb-3 text-center">Invoice Number</th>
-      <th class="mb-3 text-center">Buyer Name</th>
-      <th class="mb-3 text-center">Seller Name</th>
-      <th class="mb-3 text-center">Invoice Date</th>
-      <th class="mb-3 text-center">Actions</th>
-    </tr>
-
-    <tr *ngFor="let invoice of invoices">
-      <td>{{ invoice.number }}</td>
-      <td>{{ invoice.buyer.name }}</td>
-      <td>{{ invoice.seller.name }}</td>
-      <td>{{ invoice.date | date }}</td>
-      <td>
-        <button (click)="deleteInvoice(invoice)" class="btn btn-danger btn-margin" title="Delete invoice">
-          <i class="fas fa-trash"></i> Delete Invoice
-        </button>
-      </td>
-    </tr>
-  </table>
+  <div class="content-container">
+    <form *ngIf="!editingInvoice" [formGroup]="invoiceForm">
+      <!-- Invoice details row -->
+      <div class="invoice-details-row">
+        <!-- Existing invoices -->
+        <table class="table table-striped table-bordered table-hover" id="invoicesTable">
+          <tr>
+            <th class="mb-3 text-center">Invoice Number</th>
+            <th class="mb-3 text-center">Buyer Name</th>
+            <th class="mb-3 text-center">Seller Name</th>
+            <th class="mb-3 text-center">Invoice Date</th>
+            <th class="mb-3 text-center">Actions</th>
+          </tr>
+          <tr *ngFor="let invoice of invoices">
+            <td>{{ invoice.number }}</td>
+            <td>{{ invoice.buyer.name }}</td>
+            <td>{{ invoice.seller.name }}</td>
+            <td>{{ invoice.date | date }}</td>
+            <td>
+              <button (click)="editInvoice(invoice)" class="btn btn-warning btn-margin" title="Edit invoice">
+                <i class="fas fa-pencil-alt"></i> Edit Invoice
+              </button>
+              <button (click)="deleteInvoice(invoice)" class="btn btn-danger btn-margin" title="Delete invoice">
+                <i class="fas fa-trash"></i> Delete Invoice
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </form>
+  
+    <form *ngIf="editingInvoice" [formGroup]="invoiceForm">
+      <!-- Edit Invoice details -->
+      <div class="invoice-details-row">
+        <div class="form-group row">
+          <label for="number">Invoice Number</label>
+          <input formControlName="number" type="text" class="form-control" name="number" id="number" required>
+        </div>
+  
+        <div class="form-group row">
+          <label for="buyer">Buyer</label>
+          <select formControlName="buyer" class="form-control" name="buyer" id="buyer" required>
+            <option *ngFor="let company of companies" [ngValue]="company.name" [selected]="company.name === editingInvoice.seller.name" >{{ company.name }}</option>
+          </select>
+        </div>
+  
+        <div class="form-group row">
+          <label for="seller">Seller</label>
+          <select formControlName="seller" class="form-control" name="seller" id="seller" required>
+            <option *ngFor="let company of companies" [ngValue]="company.name" [selected]="company.name === editingInvoice.seller.name">
+              {{ company.name }}
+            </option>
+          </select>
+        </div>
+        
+  
+        <div class="form-group row">
+          <label for="date">Invoice Date</label>
+          <input formControlName="date" type="date" class="form-control" name="date" id="date" required>
+        </div>
+      </div>
+  
+      <!-- Edit Invoice entries -->
+      <div *ngFor="let entry of editingInvoice.entries; let i = index" class="invoice-entry">
+        <!-- Similar structure as in the original code for entry details -->
+      </div>
+  
+      <div class="invoice-details-row">
+        <!-- Save edited invoice button -->
+        <div class="form-group">
+          <button (click)="saveEditedInvoice()" class="btn btn-primary" title="Save Edited Invoice">
+            <i class="fas fa-save"></i> Save Invoice
+          </button>
+        </div>
+  
+        <!-- Cancel editing button -->
+        <div class="form-group">
+          <button (click)="cancelEditing()" class="btn btn-secondary" title="Cancel Editing">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
