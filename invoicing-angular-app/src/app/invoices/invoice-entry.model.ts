@@ -1,4 +1,5 @@
 import { Car } from "./car.model";
+import { Vat } from "./vat.enum";
 
 // invoice-entry.model.ts
 export class InvoiceEntry {
@@ -7,7 +8,7 @@ export class InvoiceEntry {
     public quantity: number;
     public price: number;
     public vatValue: number;
-    public vatRate: number;
+    public vatRate: string;
     public depreciationCosts: Car | null;
   
     constructor(
@@ -16,7 +17,7 @@ export class InvoiceEntry {
       quantity: number,
       price: number,
       vatValue: number,
-      vatRate: number,
+      vatRate: string,
       depreciationCosts: Car | null
     ) {
       this.id = id;

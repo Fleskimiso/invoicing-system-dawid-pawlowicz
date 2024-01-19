@@ -6,7 +6,8 @@ import { Company } from '../companies/company';
 import { InvoiceEntry } from './invoice-entry.model';
 import { Car } from './car.model';
 import { CompanyService } from '../companies/CompanyService';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { Vat } from './vat.enum';
 
 @Component({
   selector: 'app-invoices',
@@ -17,10 +18,11 @@ export class InvoiceComponent implements OnInit {
   invoices: Invoice[] = [];
   companies: Company[] = []
   newInvoice: Invoice = new Invoice(0, '', new Date(), new Company(0, '', '', '', 0, 0), new Company(0, '', '', '', 0, 0), []);
-  vatRates: number[] = [0, 5, 7, 8, 21];
+  vatRates: Vat[] = [Vat.VAT_0, Vat.VAT_5, Vat.VAT_7, Vat.VAT_8, Vat.VAT_21, Vat.VAT_ZW];
 
   editingInvoice: Invoice | null = null;
   invoiceForm: FormGroup;
+  formEntries: FormArray;
 
   constructor(private invoiceService: InvoiceService, private companiesService: CompanyService,
     private fb: FormBuilder ) {
@@ -29,8 +31,11 @@ export class InvoiceComponent implements OnInit {
       number: [''],
       buyer: [null],
       seller: [null],
+      buyerName: [''],
+      sellerName: [''],
       date: [''],
     });
+    this.formEntries = this.fb.array([])
 
   }
 
@@ -76,12 +81,12 @@ export class InvoiceComponent implements OnInit {
 
   recomputeVatValue(entry: InvoiceEntry) {
     // Recompute VAT value based on your formula
-    entry.vatValue = (entry.vatRate / 100) * entry.quantity * entry.price;
+    entry.vatValue = (Number(entry.vatRate) / 100) * entry.quantity * entry.price;
   }
 
   addEntry() {
     // Create a new entry with default values
-  const newEntry = new InvoiceEntry(0, "", 0, 0, 0, 0, null);
+  const newEntry = new InvoiceEntry(0, "", 0, 0, 0, Vat.VAT_0 , null);
 
   // Update the newInvoice object
   this.newInvoice = {
@@ -104,28 +109,69 @@ export class InvoiceComponent implements OnInit {
 
   // Method to set default values in the form when editing
   private setFormValues(invoice: Invoice): void {
-    this.invoiceForm.patchValue({
-      number: invoice.number,
-      buyer: invoice.buyer,
-      seller: invoice.seller,
-      date: invoice.date,
-      // Add other form controls as needed
-    });
 
-    //TODO editing invoice company and buyer name
+    if (this.editingInvoice) {
+      const entryControls = this.editingInvoice.entries.map(entry => this.fb.group({
+        id: [entry.id],
+        description: [entry.description],
+        quantity: [entry.quantity],
+        price: [entry.price],
+        vatRate: [entry.vatRate],
+        vatValue: [entry.vatValue],
+        depreciationCosts: entry.depreciationCosts !== null ? this.fb.group({
+          id: [entry.depreciationCosts?.id],
+          registrationNum: [entry.depreciationCosts?.registrationNum],
+          ifPrivateUse: [entry.depreciationCosts?.ifPrivateUse],
+        }) : [null]
+      }));
+  
+      this.invoiceForm = this.fb.group({
+        number: [this.editingInvoice.number],
+        buyer: [this.editingInvoice.buyer],
+        seller: [this.editingInvoice.seller],
+        buyerName: [this.editingInvoice.buyer.name],
+        sellerName: [this.editingInvoice.seller.name],
+        date: [this.editingInvoice.date],
+      });
+      
+      this.formEntries = this.fb.array(entryControls);
+      
+    }
 
-    // Set the default value for the select element
-  this.invoiceForm.get('buyer')?.setValue(invoice.buyer.name);
-  this.invoiceForm.get('seller')?.setValue(invoice.seller.name);
   }
 
   saveEditedInvoice() {
     // Update the invoice details
+    const buyerName = this.invoiceForm.value.buyerName
+    const sellerName = this.invoiceForm.value.sellerName
+
+    delete this.invoiceForm.value.buyerName
+    delete this.invoiceForm.value.sellerName
+
     const editedInvoice: Invoice = {
       ...this.editingInvoice!,
       ...this.invoiceForm.value,
-      entries: this.editingInvoice!.entries, // Update entries as needed
+      entries: this.formEntries.value, // Update entries as needed
     };
+
+    const buyerCompany = this.companies.find(company => {
+      return company.name === buyerName
+    })
+
+    const sellerCompany = this.companies.find(company =>{
+      return company.name === sellerName
+    })
+
+    editedInvoice.buyer = buyerCompany ? buyerCompany : editedInvoice.buyer
+    editedInvoice.seller = sellerCompany ? sellerCompany : editedInvoice.seller
+
+
+    console.log(this.formEntries.value);
+    
+    console.log(editedInvoice.entries);
+    
+
+
 
     // Call the service to save changes
     this.invoiceService.updateInvoice(editedInvoice).subscribe(() => {
@@ -138,6 +184,8 @@ export class InvoiceComponent implements OnInit {
       // Reset editingInvoice and form
       this.editingInvoice = null;
       this.invoiceForm.reset();
+      this.formEntries.reset();
+
     });
   }
 
