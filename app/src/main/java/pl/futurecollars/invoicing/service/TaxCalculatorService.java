@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import pl.futurecollars.invoicing.controller.TaxCalculatorResult;
 import pl.futurecollars.invoicing.db.Database;
@@ -19,6 +20,7 @@ import pl.futurecollars.invoicing.model.InvoiceEntry;
 public class TaxCalculatorService {
 
   private final Database<Invoice> database;
+  private final Database<Company> companyDatabase;
 
   public BigDecimal income(String taxIdentificationNumber) {
     return visit(sellerPredicate(taxIdentificationNumber), InvoiceEntry::getPrice);
@@ -44,7 +46,13 @@ public class TaxCalculatorService {
     return incomingVat(taxIdentificationNumber).subtract(outgoingVat(taxIdentificationNumber));
   }
 
-  public TaxCalculatorResult calculateTaxes(Company company) {
+  public TaxCalculatorResult calculateTaxes(int id) {
+
+    Optional<Company> companyOptional = companyDatabase.getById(id);
+    if(companyOptional.isEmpty()) {
+      return TaxCalculatorResult.builder().build(); // empty result
+    }
+    Company company = companyOptional.get();
     String taxIdentificationNumber = company.getTaxIdentificationNumber();
     BigDecimal earnings = getEarnings(taxIdentificationNumber);
     BigDecimal earningsMinusPensionInsurance = earnings.subtract(company.getPensionInsurance());

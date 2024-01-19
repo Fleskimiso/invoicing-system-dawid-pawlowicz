@@ -31,8 +31,10 @@ export class InvoiceService {
     return this.httpClient.delete<any>(PATH + `/${id}`, this.options);
   }
 
-  // Add methods for updating and viewing invoice details as needed
-
+  updateInvoice(invoice: Invoice): Observable<Invoice> {
+    const id = invoice.id || 0; // Provide a default value for id
+    return this.httpClient.put<Invoice>(`${PATH}/${id}`, this.formalizeInvoiceObject(invoice), this.options);
+  }
   private formalizeInvoiceObject(invoice: Invoice) {
     // Dummy company data
     const dummyCompany = new Company(0, 'Dummy Company', '', '', 0, 0);

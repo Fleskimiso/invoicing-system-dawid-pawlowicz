@@ -1,12 +1,14 @@
 package pl.futurecollars.invoicing.controller.tax;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoicing.controller.TaxCalculatorResult;
-import pl.futurecollars.invoicing.model.Company;
 import pl.futurecollars.invoicing.service.TaxCalculatorService;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class TaxCalculatorController implements TaxCalculator {
@@ -14,8 +16,8 @@ public class TaxCalculatorController implements TaxCalculator {
   private final TaxCalculatorService taxCalculatorService;
 
   @Override
-  public TaxCalculatorResult calculateTaxes(@RequestBody Company company) {
-    return taxCalculatorService.calculateTaxes(company);
+  public ResponseEntity<TaxCalculatorResult> calculateTaxes(@PathVariable int id) {
+    return ResponseEntity.ok(taxCalculatorService.calculateTaxes(id));
   }
 
 }

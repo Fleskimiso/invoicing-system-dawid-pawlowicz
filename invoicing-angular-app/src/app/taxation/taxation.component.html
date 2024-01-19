@@ -1,1 +1,93 @@
-<p>taxation works!</p>
+<!-- tax-calculator.component.html -->
+<div id="TaxCalculator" class="content">
+    <div class="main-title">Tax Calculator</div>
+  
+  <div class="content-container">
+    <form [formGroup]="taxCalculatorForm">
+      <div class="form-group">
+        <label for="companyId">Select Company</label>
+        <select formControlName="companyId" class="form-control">
+          <option *ngFor="let company of companies" [value]="company.id">{{ company.name }}</option>
+        </select>
+      </div>
+  
+      <div class="form-group">
+        <button (click)="calculateTaxes()" class="btn btn-primary" title="Calculate Taxes">
+          <i class="fas fa-calculator"></i> Calculate Taxes
+        </button>
+      </div>
+    </form>
+  
+    <!-- Display tax result -->
+    <div *ngIf="taxResult" class="tax-result">
+      <!-- Income -->
+      <div class="result-item">
+        <span>Income:</span>
+        <span>{{ taxResult.income | currency }}</span>
+      </div>
+    
+      <!-- Costs -->
+      <div class="result-item">
+        <span>Costs:</span>
+        <span>{{ taxResult.costs | currency }}</span>
+      </div>
+    
+      <!-- Earnings -->
+      <div class="result-item">
+        <span>Earnings:</span>
+        <span>{{ taxResult.earnings | currency }}</span>
+      </div>
+    
+      <!-- Pension Insurance -->
+      <div class="result-item">
+        <span>Pension Insurance:</span>
+        <span>{{ taxResult.pensionInsurance | currency }}</span>
+      </div>
+    
+      <!-- Earnings Minus Cost (rounded) -->
+      <div class="result-item">
+        <span>Earnings Minus Cost (rounded):</span>
+        <span>{{ taxResult.earningMinusCost | currency }}</span>
+      </div>
+    
+      <!-- Income Tax -->
+      <div class="result-item">
+        <span>Income Tax:</span>
+        <span>{{ taxResult.incomeTax | currency }}</span>
+      </div>
+    
+      <!-- Final Tax -->
+      <div class="result-item">
+        <span>Final Tax:</span>
+        <span>{{ taxResult.finalTax | currency }}</span>
+      </div>
+    
+      <!-- Health Insurance -->
+      <div class="result-item">
+        <span>Health Insurance:</span>
+        <span>{{ taxResult.healthInsurance | currency }}</span>
+      </div>
+    
+      <!-- Incoming VAT -->
+      <div class="result-item">
+        <span>Incoming VAT:</span>
+        <span>{{ taxResult.incomingVat | currency }}</span>
+      </div>
+    
+      <!-- Outgoing VAT -->
+      <div class="result-item">
+        <span>Outgoing VAT:</span>
+        <span>{{ taxResult.outgoingVat | currency }}</span>
+      </div>
+    
+      <!-- VAT to Return -->
+      <div class="result-item">
+        <span>VAT to Return:</span>
+        <span>{{ taxResult.vatToReturn | currency }}</span>
+      </div>
+    </div>
+    
+
+    </div>
+  </div>
+  

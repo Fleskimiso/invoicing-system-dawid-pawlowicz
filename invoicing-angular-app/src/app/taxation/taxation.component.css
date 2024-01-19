@@ -1,0 +1,55 @@
+/* Add this style to your component's CSS file or style section */
+
+#TaxCalculator {
+    margin-top: 20px;
+  }
+  
+  .main-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .content-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  .tax-result {
+    margin-top: 30px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .result-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .result-item span {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .result-item:last-child {
+    margin-bottom: 0;
+  }
+  
