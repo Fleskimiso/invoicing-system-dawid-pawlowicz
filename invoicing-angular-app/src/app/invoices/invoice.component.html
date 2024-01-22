@@ -168,9 +168,9 @@
         </div>
       </div>
   
-      <form *ngIf="formEntries.get('formArray').controls.length > 0" [formGroup]="formEntries" >
+      <form *ngIf="formEntries.get('formArray')?.value.length > 0" [formGroup]="formEntries" >
         <div formArrayName="formArray">
-          <div *ngFor="let entryControl of formEntries.get('formArray').controls ; let i = index" class="invoice-entry" [formGroupName]="i"  >
+          <div *ngFor="let entryValue of formEntries.get('formArray')?.value ; let i = index; trackBy: trackByFn" class="invoice-entry" [formGroupName]="i"  >
             <div class="form-group">
               <label for="entryDescription{{i}}">Entry Description</label>
               <input formControlName="description" type="text" class="form-control" name="entryDescription{{i}}" id="entryDescription{{i}}" placeholder="Enter entry description" required>
@@ -178,29 +178,43 @@
           
             <div class="form-group">
               <label for="quantity{{i}}">Quantity</label>
-              <input formControlName="quantity" type="number" class="form-control" name="quantity{{i}}" id="quantity{{i}}" placeholder="Enter quantity" required>
+              <input formControlName="quantity" type="number" 
+              class="form-control" name="quantity{{i}}" id="quantity{{i}}"
+               placeholder="Enter quantity" 
+               (change)="onValueFormEntryChange('quantity',i)"
+               required>
             </div>
           
             <div class="form-group">
               <label for="price{{i}}">Price</label>
-              <input formControlName="price" type="number" class="form-control" name="price{{i}}" id="price{{i}}" placeholder="Enter price" required>
+              <input formControlName="price" type="number" 
+              class="form-control" name="price{{i}}" id="price{{i}}" 
+              placeholder="Enter price"
+              (change)="onValueFormEntryChange('price',i)"
+              required>
             </div>
           
             <div class="form-group">
+              {{ entryValue.vatRate }}
               <label for="vatRate{{i}}">VAT Rate (%)</label>
               <select formControlName="vatRate" class="form-control" name="vatRate{{i}}" id="vatRate{{i}}" required>
-                <option *ngFor="let vatRate of vatRates"  selected="vatRate === entryControl.value.vatRate" [ngValue]="vatRate">{{ vatRate }}</option>
+                <option *ngFor="let vatRate of vatRates"  
+                selected="vatRate === entryValue.vatRate"
+                (change)="onValueFormEntryChange('vatRate',i)"
+                [ngValue]="vatRate">{{ vatRate }}</option>
+
               </select>
             </div>
           
             <div class="form-group">
               <label>VAT Value</label>
               <td>
-                {{ entryControl.get('vatValue').value | currency }}
+                {{ entryValue.vatValue | currency }}
+                (Debug: Quantity: {{ entryValue.quantity }}, Price: {{ entryValue.price }}, VAT Rate: {{ entryValue.vatRate }})
               </td>
             </div>
           
-            <div *ngIf="entryControl.get('depreciationCosts').value === null">
+            <div *ngIf="entryValue.depreciationCosts === null">
               <div class="form-group">
                 <button (click)="addCarForEntryForm(i)" class="btn btn-info" title="Add Car">
                   <i class="fas fa-car"></i> Add Car
@@ -208,17 +222,23 @@
               </div>
             </div>
           
-            <div *ngIf="entryControl.get('depreciationCosts').value !== null " [formGroup]="depreciationCosts"  >
-              <div class="form-group">
-                <label for="carRegistrationNum{{i}}">Car Registration Number</label>
-                <input formControlName="registrationNum" type="text" class="form-control" name="carRegistrationNum{{i}}" id="carRegistrationNum{{i}}" placeholder="Enter car registration number">
+            <ng-container *ngIf="entryValue.depreciationCosts !== null">
+              <div formGroupName="depreciationCosts">
+                <div class="form-group">
+                  <label for="carRegistrationNum{{i}}">Car Registration Number</label>
+                  <input  formControlName="registrationNum" type="text" class="form-control"
+                   name="carRegistrationNum{{i}}" id="carRegistrationNum{{i}}"
+                    placeholder="Enter car registration number"
+                    >
+                </div>
+      
+                <div class="form-group">
+                  <label for="ifPrivateUse{{i}}">Private Use</label>
+                  <input formControlName="ifPrivateUse" type="checkbox" class="form-check-input" name="ifPrivateUse{{i}}" id="ifPrivateUse{{i}}">
+                </div>
               </div>
-          
-              <div class="form-group">
-                <label for="ifPrivateUse{{i}}">Private Use</label>
-                <input formControlName="ifPrivateUse" type="checkbox" class="form-check-input" name="ifPrivateUse{{i}}" id="ifPrivateUse{{i}}">
-              </div>
-            </div>
+            </ng-container>
+
           
             <div class="form-group">
               <button (click)="deleteEntry(i)" class="btn btn-danger" title="Delete entry">
@@ -229,9 +249,6 @@
         </div>
       </form>
       
-
-
-  
       <div class="invoice-details-row">
         <!-- Save edited invoice button -->
         <div class="form-group">
