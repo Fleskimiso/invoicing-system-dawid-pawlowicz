@@ -22,7 +22,7 @@ export class InvoiceComponent implements OnInit {
 
   editingInvoice: Invoice | null = null;
   invoiceForm: FormGroup;
-  formEntries: FormArray;
+  formEntries: FormGroup;
 
   constructor(private invoiceService: InvoiceService, private companiesService: CompanyService,
     private fb: FormBuilder ) {
@@ -35,7 +35,9 @@ export class InvoiceComponent implements OnInit {
       sellerName: [''],
       date: [''],
     });
-    this.formEntries = this.fb.array([])
+    this.formEntries = this.fb.group({
+      formArray: this.fb.array([])
+    })
 
   }
 
@@ -66,6 +68,12 @@ export class InvoiceComponent implements OnInit {
   addCarForEntry(index: number) {
     if (!this.newInvoice.entries[index].depreciationCosts) {
       this.newInvoice.entries[index].depreciationCosts = new Car(0, '', false);
+    }
+  }
+
+  addCarForEditedEntry(index: number) {
+    if ( this.editingInvoice !== null && !this.editingInvoice.entries[index].depreciationCosts) {
+      this.editingInvoice.entries[index].depreciationCosts = new Car(0, '', false);
     }
   }
 
@@ -104,11 +112,16 @@ export class InvoiceComponent implements OnInit {
   editInvoice(invoice: Invoice): void {
     this.editingInvoice = invoice;
     // Set default values in the form when editing
-    this.setFormValues(invoice);
+    this.setFormValues();
+  }
+
+  addCarForEntryForm(index: number) {
+    this.addCarForEditedEntry(index);
+    this.setFormValues();
   }
 
   // Method to set default values in the form when editing
-  private setFormValues(invoice: Invoice): void {
+  private setFormValues(): void {
 
     if (this.editingInvoice) {
       const entryControls = this.editingInvoice.entries.map(entry => this.fb.group({
@@ -133,9 +146,11 @@ export class InvoiceComponent implements OnInit {
         sellerName: [this.editingInvoice.seller.name],
         date: [this.editingInvoice.date],
       });
-      
-      this.formEntries = this.fb.array(entryControls);
-      
+  
+      this.formEntries = this.fb.group({
+        formArray: this.fb.array([...entryControls])
+      });
+
     }
 
   }
@@ -148,10 +163,12 @@ export class InvoiceComponent implements OnInit {
     delete this.invoiceForm.value.buyerName
     delete this.invoiceForm.value.sellerName
 
+    const formArray = this.formEntries.get('formArray')
+
     const editedInvoice: Invoice = {
       ...this.editingInvoice!,
       ...this.invoiceForm.value,
-      entries: this.formEntries.value, // Update entries as needed
+      entries: formArray ? formArray.value : this.editingInvoice?.entries , // Update entries as needed
     };
 
     const buyerCompany = this.companies.find(company => {
@@ -164,14 +181,6 @@ export class InvoiceComponent implements OnInit {
 
     editedInvoice.buyer = buyerCompany ? buyerCompany : editedInvoice.buyer
     editedInvoice.seller = sellerCompany ? sellerCompany : editedInvoice.seller
-
-
-    console.log(this.formEntries.value);
-    
-    console.log(editedInvoice.entries);
-    
-
-
 
     // Call the service to save changes
     this.invoiceService.updateInvoice(editedInvoice).subscribe(() => {
@@ -193,6 +202,10 @@ export class InvoiceComponent implements OnInit {
     // Reset editingInvoice and form
     this.editingInvoice = null;
     this.invoiceForm.reset();
+    this.formEntries.reset();
   }
 
 }
+//TODO adding new entries to edited invoice 
+//TODO change vat value when vat rate is changed
+//TODO fix frontedn bugs

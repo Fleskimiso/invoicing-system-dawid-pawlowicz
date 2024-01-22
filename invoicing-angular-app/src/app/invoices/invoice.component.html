@@ -168,61 +168,63 @@
         </div>
       </div>
   
-      <form *ngIf="formEntries.length > 0" [formGroup]="formEntries" >
-        <div *ngFor="let entryControl of formEntries.controls ; let i = index" class="invoice-entry" [formGroupName]="i">
-          <div class="form-group">
-            <label for="entryDescription{{i}}">Entry Description</label>
-            <input formControlName="description" type="text" class="form-control" name="entryDescription{{i}}" id="entryDescription{{i}}" placeholder="Enter entry description" required>
-          </div>
-        
-          <div class="form-group">
-            <label for="quantity{{i}}">Quantity</label>
-            <input formControlName="quantity" type="number" class="form-control" name="quantity{{i}}" id="quantity{{i}}" placeholder="Enter quantity" required>
-          </div>
-        
-          <div class="form-group">
-            <label for="price{{i}}">Price</label>
-            <input formControlName="price" type="number" class="form-control" name="price{{i}}" id="price{{i}}" placeholder="Enter price" required>
-          </div>
-        
-          <div class="form-group">
-            <label for="vatRate{{i}}">VAT Rate (%)</label>
-            <select formControlName="vatRate" class="form-control" name="vatRate{{i}}" id="vatRate{{i}}" required>
-              <option *ngFor="let vatRate of vatRates"  selected="vatRate === entryControl.value.vatRate" [ngValue]="vatRate">{{ vatRate }}</option>
-            </select>
-          </div>
-        
-          <div class="form-group">
-            <label>VAT Value</label>
-            <td>
-              {{ entryControl.get('vatValue').value | currency }}
-            </td>
-          </div>
-        
-          <div *ngIf="entryControl.get('depreciationCosts').value === null">
+      <form *ngIf="formEntries.get('formArray').controls.length > 0" [formGroup]="formEntries" >
+        <div formArrayName="formArray">
+          <div *ngFor="let entryControl of formEntries.get('formArray').controls ; let i = index" class="invoice-entry" [formGroupName]="i"  >
             <div class="form-group">
-              <button (click)="addCarForEntry(i)" class="btn btn-info" title="Add Car">
-                <i class="fas fa-car"></i> Add Car
+              <label for="entryDescription{{i}}">Entry Description</label>
+              <input formControlName="description" type="text" class="form-control" name="entryDescription{{i}}" id="entryDescription{{i}}" placeholder="Enter entry description" required>
+            </div>
+          
+            <div class="form-group">
+              <label for="quantity{{i}}">Quantity</label>
+              <input formControlName="quantity" type="number" class="form-control" name="quantity{{i}}" id="quantity{{i}}" placeholder="Enter quantity" required>
+            </div>
+          
+            <div class="form-group">
+              <label for="price{{i}}">Price</label>
+              <input formControlName="price" type="number" class="form-control" name="price{{i}}" id="price{{i}}" placeholder="Enter price" required>
+            </div>
+          
+            <div class="form-group">
+              <label for="vatRate{{i}}">VAT Rate (%)</label>
+              <select formControlName="vatRate" class="form-control" name="vatRate{{i}}" id="vatRate{{i}}" required>
+                <option *ngFor="let vatRate of vatRates"  selected="vatRate === entryControl.value.vatRate" [ngValue]="vatRate">{{ vatRate }}</option>
+              </select>
+            </div>
+          
+            <div class="form-group">
+              <label>VAT Value</label>
+              <td>
+                {{ entryControl.get('vatValue').value | currency }}
+              </td>
+            </div>
+          
+            <div *ngIf="entryControl.get('depreciationCosts').value === null">
+              <div class="form-group">
+                <button (click)="addCarForEntryForm(i)" class="btn btn-info" title="Add Car">
+                  <i class="fas fa-car"></i> Add Car
+                </button>
+              </div>
+            </div>
+          
+            <div *ngIf="entryControl.get('depreciationCosts').value !== null " [formGroup]="depreciationCosts"  >
+              <div class="form-group">
+                <label for="carRegistrationNum{{i}}">Car Registration Number</label>
+                <input formControlName="registrationNum" type="text" class="form-control" name="carRegistrationNum{{i}}" id="carRegistrationNum{{i}}" placeholder="Enter car registration number">
+              </div>
+          
+              <div class="form-group">
+                <label for="ifPrivateUse{{i}}">Private Use</label>
+                <input formControlName="ifPrivateUse" type="checkbox" class="form-check-input" name="ifPrivateUse{{i}}" id="ifPrivateUse{{i}}">
+              </div>
+            </div>
+          
+            <div class="form-group">
+              <button (click)="deleteEntry(i)" class="btn btn-danger" title="Delete entry">
+                <i class="fas fa-trash"></i> Delete Entry
               </button>
             </div>
-          </div>
-        
-          <div *ngIf="entryControl.get('depreciationCosts').value !== null ">
-            <div class="form-group">
-              <label for="carRegistrationNum{{i}}">Car Registration Number</label>
-              <input formControlName="depreciationCosts.registrationNum" type="text" class="form-control" name="carRegistrationNum{{i}}" id="carRegistrationNum{{i}}" placeholder="Enter car registration number">
-            </div>
-        
-            <div class="form-group">
-              <label for="ifPrivateUse{{i}}">Private Use</label>
-              <input formControlName="depreciationCosts.ifPrivateUse" type="checkbox" class="form-check-input" name="ifPrivateUse{{i}}" id="ifPrivateUse{{i}}">
-            </div>
-          </div>
-        
-          <div class="form-group">
-            <button (click)="deleteEntry(i)" class="btn btn-danger" title="Delete entry">
-              <i class="fas fa-trash"></i> Delete Entry
-            </button>
           </div>
         </div>
       </form>
