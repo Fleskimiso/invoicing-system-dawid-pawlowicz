@@ -1,13 +1,14 @@
 // invoice.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Invoice } from './invoice';
 import { InvoiceService } from './invoice.service';
 import { Company } from '../companies/company';
 import { InvoiceEntry } from './invoice-entry.model';
 import { Car } from './car.model';
 import { CompanyService } from '../companies/CompanyService';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Vat } from './vat.enum';
+
 
 @Component({
   selector: 'app-invoices',
@@ -25,7 +26,7 @@ export class InvoiceComponent implements OnInit {
   formEntries: FormGroup;
 
   constructor(private invoiceService: InvoiceService, private companiesService: CompanyService,
-    private fb: FormBuilder ) {
+    private fb: FormBuilder,private ngZone: NgZone ) {
 
     this.invoiceForm = this.fb.group({
       number: [''],
@@ -87,8 +88,30 @@ export class InvoiceComponent implements OnInit {
     }
   }
 
+  onValueFormEntryChange(fieldName: string, index: number) {
+    switch (fieldName) {
+      case 'quantity':
+      case 'price':
+      case 'vatRate':
+        const entryArray = this.formEntries.get('formArray') as FormArray
+        const quantity = entryArray.controls[index].get('quantity')?.value;
+        const price = entryArray.controls[index].get('price')?.value;
+        const vatRate = entryArray.controls[index].get('vatRate')?.value;
+        console.log("quantity ", quantity);
+        
+        entryArray.controls[index].get('vatValue')?.setValue(
+          (Number(vatRate) / 100) * quantity * price
+        );
+        break;
+    }
+  }
+
+  getVatRateValue() {
+    //TODO !!!
+  }
+
+
   recomputeVatValue(entry: InvoiceEntry) {
-    // Recompute VAT value based on your formula
     entry.vatValue = (Number(entry.vatRate) / 100) * entry.quantity * entry.price;
   }
 
@@ -118,6 +141,10 @@ export class InvoiceComponent implements OnInit {
   addCarForEntryForm(index: number) {
     this.addCarForEditedEntry(index);
     this.setFormValues();
+  }
+
+  trackByFn(index: number, item: any) {   
+    return index; 
   }
 
   // Method to set default values in the form when editing
