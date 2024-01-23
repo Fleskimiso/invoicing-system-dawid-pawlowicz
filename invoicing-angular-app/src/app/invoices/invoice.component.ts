@@ -6,7 +6,7 @@ import { Company } from '../companies/company';
 import { InvoiceEntry } from './invoice-entry.model';
 import { Car } from './car.model';
 import { CompanyService } from '../companies/CompanyService';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Vat } from './vat.enum';
 
 
@@ -72,9 +72,20 @@ export class InvoiceComponent implements OnInit {
     }
   }
 
-  addCarForEditedEntry(index: number) {
-    if ( this.editingInvoice !== null && !this.editingInvoice.entries[index].depreciationCosts) {
-      this.editingInvoice.entries[index].depreciationCosts = new Car(0, '', false);
+  addCarForEditedEntry(index: number): void {
+    const formArray = this.formEntries.get('formArray') as FormArray;
+  
+    if (formArray && formArray.controls.length > index) {
+      const entryFormGroup = formArray.at(index) as FormGroup;
+      const depreciationCostsFormGroup = entryFormGroup.get('depreciationCosts') as FormGroup;
+  
+      if (!depreciationCostsFormGroup) {
+        entryFormGroup.addControl('depreciationCosts', this.fb.group({
+          id: [0],
+          registrationNum: [''],
+          ifPrivateUse: [false],
+        }));
+      }
     }
   }
 
@@ -89,6 +100,7 @@ export class InvoiceComponent implements OnInit {
   }
 
   onValueFormEntryChange(fieldName: string, index: number) {
+    
     switch (fieldName) {
       case 'quantity':
       case 'price':
@@ -97,18 +109,30 @@ export class InvoiceComponent implements OnInit {
         const quantity = entryArray.controls[index].get('quantity')?.value;
         const price = entryArray.controls[index].get('price')?.value;
         const vatRate = entryArray.controls[index].get('vatRate')?.value;
-        console.log("quantity ", quantity);
-        
         entryArray.controls[index].get('vatValue')?.setValue(
-          (Number(vatRate) / 100) * quantity * price
+          (this.getVatRateValue(vatRate) / 100) * quantity * price
         );
         break;
     }
   }
 
-  getVatRateValue() {
-    //TODO !!!
+  getVatRateValue(vatRate: Vat): number {
+    switch(vatRate) {
+      case Vat.VAT_0:
+        return 0;
+      case Vat.VAT_5:
+        return 5;
+      case Vat.VAT_7:
+        return 7
+      case Vat.VAT_8:
+        return 8
+      case Vat.VAT_21:
+        return 21
+      default:
+        return 0;
+    }
   }
+
 
 
   recomputeVatValue(entry: InvoiceEntry) {
@@ -126,10 +150,34 @@ export class InvoiceComponent implements OnInit {
   };
 }
 
+
+
   deleteEntry(index: number) {
     if (this.newInvoice.entries && index >= 0 && index < this.newInvoice.entries.length) {
       this.newInvoice.entries.splice(index, 1);
     }
+  }
+
+  deleteEntryFromEditedInvoice(index: number): void {
+    const formArray = this.formEntries.get('formArray') as FormArray;
+  
+    if (formArray && formArray.controls.length > index) {
+      formArray.removeAt(index);
+    }
+  }
+
+  addNewEntry() {
+    const newEntry = this.fb.group({
+      // Define form controls for a new entry
+      description: [''],
+      quantity: [0],
+      price: [0],
+      vatRate: [''],
+      vatValue: [0],
+      depreciationCosts: [null],
+    });
+  
+    (this.formEntries.get('formArray') as FormArray).push(newEntry);
   }
 
   editInvoice(invoice: Invoice): void {
