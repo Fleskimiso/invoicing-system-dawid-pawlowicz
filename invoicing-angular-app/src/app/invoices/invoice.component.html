@@ -197,10 +197,13 @@
             <div class="form-group">
               {{ entryValue.vatRate }}
               <label for="vatRate{{i}}">VAT Rate (%)</label>
-              <select formControlName="vatRate" class="form-control" name="vatRate{{i}}" id="vatRate{{i}}" required>
+              <select  formControlName="vatRate" class="form-control"
+               name="vatRate{{i}}" id="vatRate{{i}}"
+               (change)="onValueFormEntryChange('vatRate',i)"
+               required>
                 <option *ngFor="let vatRate of vatRates"  
                 selected="vatRate === entryValue.vatRate"
-                (change)="onValueFormEntryChange('vatRate',i)"
+
                 [ngValue]="vatRate">{{ vatRate }}</option>
 
               </select>
@@ -241,13 +244,19 @@
 
           
             <div class="form-group">
-              <button (click)="deleteEntry(i)" class="btn btn-danger" title="Delete entry">
+              <button (click)="deleteEntryFromEditedInvoice(i)" class="btn btn-danger" title="Delete entry">
                 <i class="fas fa-trash"></i> Delete Entry
               </button>
             </div>
           </div>
         </div>
       </form>
+
+      <div class="form-group">
+        <button (click)="addNewEntry()" class="btn btn-success" title="Add New Entry">
+          <i class="fas fa-plus"></i> Add New Entry
+        </button>
+      </div>
       
       <div class="invoice-details-row">
         <!-- Save edited invoice button -->
