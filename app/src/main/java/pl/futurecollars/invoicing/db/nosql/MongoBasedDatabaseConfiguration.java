@@ -68,12 +68,14 @@ public class MongoBasedDatabaseConfiguration {
   @Qualifier("company")
   public Database<Company> companyMongoDatabase(
       @Value("${invoicing-system.database.companies.collection}") String collectionName,
+      @Value("${invoicing-system.database.invoices.collection}") String invoicesCollectionName,
       MongoDatabase mongoDb,
       MongoIdProvider mongoIdProvider
   ) {
     MongoCollection<Company> collection = mongoDb.getCollection(collectionName, Company.class);
+    MongoCollection<Invoice> invoiceMongoCollection = mongoDb.getCollection(invoicesCollectionName, Invoice.class);
     log.info("Creating company mongoDatabase");
-    return new MongoBasedDatabase<>(collection, mongoIdProvider);
+    return new MongoBasedDatabaseCompany(collection, invoiceMongoCollection, mongoIdProvider);
   }
 
 }

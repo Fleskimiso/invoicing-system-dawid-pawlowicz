@@ -40,11 +40,11 @@ export class InvoiceService {
     const dummyCompany = new Company(0, 'Dummy Company', '', '', 0, 0);
   
     return {
-      number: invoice.number || '', // provide default value for number
-      buyer: invoice.buyer || dummyCompany, // provide default or dummy value for buyer
-      seller: invoice.seller || dummyCompany, // provide default or dummy value for seller
-      date: invoice.date || new Date(), // provide default value for date
-      entries: invoice.entries || [] // provide default value for entries
+      number: invoice.number || '', 
+      buyer: invoice.buyer || dummyCompany, 
+      seller: invoice.seller || dummyCompany,
+      date: invoice.date || new Date(), 
+      entries: invoice.entries || [] 
     };
   }
   
