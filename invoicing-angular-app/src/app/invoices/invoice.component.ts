@@ -7,7 +7,7 @@ import { InvoiceEntry } from './invoice-entry.model';
 import { Car } from './car.model';
 import { CompanyService } from '../companies/CompanyService';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { Vat } from './vat.enum';
+import { Vat, getVatRateFromString, getVatRateValue} from './vat.enum';
 
 
 @Component({
@@ -74,17 +74,29 @@ export class InvoiceComponent implements OnInit {
 
   addCarForEditedEntry(index: number): void {
     const formArray = this.formEntries.get('formArray') as FormArray;
+
+    console.log(index);
+    
   
     if (formArray && formArray.controls.length > index) {
       const entryFormGroup = formArray.at(index) as FormGroup;
       const depreciationCostsFormGroup = entryFormGroup.get('depreciationCosts') as FormGroup;
+
+      console.log(depreciationCostsFormGroup);
+      
+      console.log("if sts: ", !depreciationCostsFormGroup.value);
+      
   
-      if (!depreciationCostsFormGroup) {
-        entryFormGroup.addControl('depreciationCosts', this.fb.group({
+      if (!depreciationCostsFormGroup.value) {
+        entryFormGroup.setControl('depreciationCosts', this.fb.group({
           id: [0],
           registrationNum: [''],
-          ifPrivateUse: [false],
+          ifPrivateUse: [false]
         }));
+
+        console.log(entryFormGroup);
+        
+
       }
     }
   }
@@ -110,33 +122,17 @@ export class InvoiceComponent implements OnInit {
         const price = entryArray.controls[index].get('price')?.value;
         const vatRate = entryArray.controls[index].get('vatRate')?.value;
         entryArray.controls[index].get('vatValue')?.setValue(
-          (this.getVatRateValue(vatRate) / 100) * quantity * price
+          (getVatRateValue(vatRate) / 100) * quantity * price
         );
         break;
     }
   }
 
-  getVatRateValue(vatRate: Vat): number {
-    switch(vatRate) {
-      case Vat.VAT_0:
-        return 0;
-      case Vat.VAT_5:
-        return 5;
-      case Vat.VAT_7:
-        return 7
-      case Vat.VAT_8:
-        return 8
-      case Vat.VAT_21:
-        return 21
-      default:
-        return 0;
-    }
-  }
-
-
+  
 
   recomputeVatValue(entry: InvoiceEntry) {
-    entry.vatValue = (Number(entry.vatRate) / 100) * entry.quantity * entry.price;
+
+    entry.vatValue = (getVatRateValue(getVatRateFromString(entry.vatRate)) / 100) * entry.quantity * entry.price;
   }
 
   addEntry() {
@@ -188,7 +184,7 @@ export class InvoiceComponent implements OnInit {
 
   addCarForEntryForm(index: number) {
     this.addCarForEditedEntry(index);
-    this.setFormValues();
+ //   this.setFormValues();
   }
 
   trackByFn(index: number, item: any) {   
