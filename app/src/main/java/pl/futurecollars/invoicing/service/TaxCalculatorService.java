@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import pl.futurecollars.invoicing.controller.TaxCalculatorResult;
 import pl.futurecollars.invoicing.db.Database;
@@ -49,9 +48,10 @@ public class TaxCalculatorService {
   public TaxCalculatorResult calculateTaxes(int id) {
 
     Optional<Company> companyOptional = companyDatabase.getById(id);
-    if(companyOptional.isEmpty()) {
-      return TaxCalculatorResult.builder().build(); // empty result
+    if (companyOptional.isEmpty()) {
+      return TaxCalculatorResult.builder().build();
     }
+
     Company company = companyOptional.get();
     String taxIdentificationNumber = company.getTaxIdentificationNumber();
     BigDecimal earnings = getEarnings(taxIdentificationNumber);

@@ -14,7 +14,6 @@ import pl.futurecollars.invoicing.controller.TaxCalculatorResult;
 @Api(tags = {"tax-controller"})
 public interface TaxCalculator {
 
-
   @ApiOperation(value = "Get tax related information's (incomes, costs, vat and taxes)")
   @GetMapping(value = "/{id}", produces = {"application/json;charset=UTF-8"})
   ResponseEntity<TaxCalculatorResult> calculateTaxes(@PathVariable int id);
