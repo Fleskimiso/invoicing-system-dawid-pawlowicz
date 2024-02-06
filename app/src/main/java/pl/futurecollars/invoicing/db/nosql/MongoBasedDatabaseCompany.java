@@ -13,7 +13,7 @@ import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.WithId;
 
 @AllArgsConstructor
-public class MongoBasedDatabaseCompany <Company extends WithId> implements Database<Company> {
+public class MongoBasedDatabaseCompany<Company extends WithId> implements Database<Company> {
 
   private final MongoCollection<Company> collection;
   private final MongoCollection<Invoice> invoiceCollection;
@@ -54,7 +54,6 @@ public class MongoBasedDatabaseCompany <Company extends WithId> implements Datab
 
       return updatedCompany;
 
-
     } else {
       throw new IllegalArgumentException("Couldn't update item with id: " + id);
     }
@@ -70,7 +69,6 @@ public class MongoBasedDatabaseCompany <Company extends WithId> implements Datab
     invoiceCollection.updateMany(Filters.eq("seller._id", companyId),
         new Document("$set", new Document("seller", updatedCompany)));
   }
-
 
   @Override
   public void delete(int id) {

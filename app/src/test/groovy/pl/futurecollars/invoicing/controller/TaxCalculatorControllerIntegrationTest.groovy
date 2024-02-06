@@ -24,7 +24,7 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
     private final static String TAX_ENDPOINT = "/tax"
     private final static String INVOICE_ENDPOINT = "/invoices"
 
-    def "should return 0 when not found invoice"() {
+    def "should return null when not found the company"() {
         given:
         addMultipleInvoices(INVOICE_ENDPOINT,10)
 
@@ -32,23 +32,17 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, company(30))
 
         then:
-        taxCalculatorResponse.income ==0
-        taxCalculatorResponse.costs==0
-        taxCalculatorResponse.earnings==0
-        taxCalculatorResponse.incomeTax==0
-        taxCalculatorResponse.pensionInsurance==20
-        taxCalculatorResponse.healthInsurance==8.61
-        taxCalculatorResponse.incomingVat==0
-        taxCalculatorResponse.outgoingVat==0
-        taxCalculatorResponse.vatToReturn ==0
+        taxCalculatorResponse.income == null
     }
 
     def "should calculate from invoice"() {
         given:
         addMultipleInvoices(INVOICE_ENDPOINT,10)
+        addMultipleCompanies("/companies", 10)
+        def comapnies  =getAllCompanies("/companies")
 
         when:
-        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, company(10))
+        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT, comapnies[9])
 
         then:
         taxCalculatorResponse.income == 8000
@@ -66,9 +60,10 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         given:
         def inv = carInvoice()
         addItemAndReturnId(INVOICE_ENDPOINT,jsonService.toJson(inv))
+        def comapnies = getAllCompanies("/companies")
 
         when:
-        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT,inv.getSeller())
+        def taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT,comapnies[3])
 
         then: "seller"
         taxCalculatorResponse.income == 3600.0
@@ -84,7 +79,7 @@ class TaxCalculatorControllerIntegrationTest extends ControllerTestHelper {
         taxCalculatorResponse.vatToReturn == 84
 
         when:
-        taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT,inv.getBuyer())
+        taxCalculatorResponse = getTaxCalculatorResult(TAX_ENDPOINT,comapnies[7])
 
         then: "buyer"
         taxCalculatorResponse.income == 6400

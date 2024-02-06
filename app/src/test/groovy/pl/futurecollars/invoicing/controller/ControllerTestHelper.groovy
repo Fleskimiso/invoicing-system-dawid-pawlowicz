@@ -106,9 +106,7 @@ class ControllerTestHelper extends Specification {
 
     protected TaxCalculatorResult getTaxCalculatorResult(String endpoint, Company company) {
         def taxAsString = mockMvc.perform(
-                post(endpoint)
-                        .content(jsonService.toJson(company))
-                        .contentType(MediaType.APPLICATION_JSON)
+                get(endpoint + "/" + company.getId() )
                         .with(csrf())
         )
                 .andExpect(status().isOk())
